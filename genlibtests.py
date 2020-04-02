@@ -26,7 +26,7 @@
 # - add some sort of handle/etc for cloning, filter sequences if necessary 
 # - sumbout 5' TOP 
 # - distance btw 5' to uAUG - can enhance initiation when 5' leader is > 35 in yeast (Slusher et al 1991) 
-
+#testcommit
 import sys, os, argparse, subprocess, re
 
 
