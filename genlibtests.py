@@ -63,16 +63,6 @@ def get_rna_structure_energy(sequence):
 
     return (nrg, strx)
                                                                                                                           
-parser = argparse.ArgumentParser(description = "Build a library of 5' UTR sequences containing defined regulatory elements")
-
-#parser.add_argument("-i", "--input", help="", required=True)
-parser.add_argument("-o", "--output", help="Output file (default stdout)", type=argparse.FileType('w'), default=sys.stdout)
-parser.add_argument("-n", "--size", help="Max number of library members", type=int, default=10)
-parser.add_argument("-l", "--length", help="Max length of library members", type=int, default=200)
-args = parser.parse_args()
-
-print "Generating library of max size %d of length %d" % (args.size, args.length)
-
 # legend - numbering around the start codon
 
 #  -6 -5 -4 -3 -2 -1 +1 +2 +3 +4 +5 
@@ -106,89 +96,69 @@ dist_uorf_stop_main_start = [10, 20, 30, 40, 50]
 # uORF length (not including start or stop codons) 
 uorf_length = [0, 3, 12, 24, 39, 57, 99]
 
-# 5' "TOP" sequences
-# C as first residue, >8 long, variable pyrimidine sequence within TOP
+stem_length = [4]
+
+loop_length= [6]
 
 
 max_lib_size = len(start_codons) * len(stop_codons) * len(start_context_pm6pm1) * len(start_context_p4p5) * \
                len(dist_uorf_strx) * len(dist_uorf_stop_main_start) * len(uorf_length)
 
-#print "Possibilities with all elements (not including location in 5' leader): %d" % max_lib_size
-
-# syntax for calling RNAinverse:
-
-# RNAinverse -Fmp -f 0.5 -d2 < seqstruct.txt
-
-#with seqstruct.txt =
-# ...(((((....)))))....(((.(((....))).)))....
-# NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-# AUGNNNNNUGAUNNNNNAUGANNNUNNNGUUANNNUNNNNNNN
-# augNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNN
-
 rnainverse_input_long = "...(((((....)))))....(((.(((....))).))).......(((((....)))))....(((.(((....))).))).......(((((....)))))....(((.(((....))).))).......(((((....)))))....(((.(((....))).))).......(((((....)))))....(((.(((....))).)))....\naugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNNaugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNNaugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNNaugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNNaugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNN"
 
 rnainverse_input_short = "...(((((....)))))....(((.(((....))).)))...\naugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNN"
 
-#list = []
+
 a="."
 b="("
 c=")"
-masterlist=[]
-#list.append(a*10+b*3+a*5+c*3+a*5)
-#print(list)
-"""
-def placepin(loc,ovrlen,pinlen,looplen):
-    placeholder=""
-    placeholder+=a*overlen
-    placeholder[loc]=
-"""
+masterlist=[] 
 
-def takeinverse(instring):
+def bindpattern(inseq,inpat): #tool to bind the dot-bracket notation to its inherent pattern
+    return inseq+"\n"+inpat
+
+def takeinverse(instring): #simplified functionality for the inverse call from the input string
     tmp = stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % instring)
     tmp.next()
     seq = tmp.next().split()[0]
     return seq
-def insert_with_delete(base,insert,index):
-    return base[0:index]+insert+base[index+len(insert)]
+def insert_with_delete(base,insert,index):#tool to insert a string into another string at index with delete
+    return base[0:index]+insert+base[index+len(insert):]
 
-def insert(inputstring, index, insertedstr):
+def insert(inputstring, index, insertedstr): #tool to insert a string into another string at index without delete
     return inputstring[:index]+insertedstr+inputstring[index+1:]
     
-def genpin(pinlen,looplen):
+def genpin(pinlen,looplen): #generate a hairpin structure in dot-bracket notation
     return(b*pinlen+a*looplen+c*pinlen)
 
-#print(takeinverse("...(((((....)))))....(((.(((....))).)))..."))
-#print(genpin(6,7))
-overlen=50
-listofpins=[]
+def generate_stop_start_pattern(ulen,distusms): #writes a sequence of uORF length ulen and NCR length distusms intended for the latter part of an RNAInverse call #TODO: Add negative context permutations
+    return "aug"+ulen*"N"+"uag"+(distusms)*"N"+"aug"
 
-for k in range(2,6):
-    for i in range(4,8):
-        listofpins.append(genpin(k,i))
+def generate(): #still developing function which will serve as the primary generation. Will iterate through the input parameters, generating and inverse folding all permutation
+    basepat=(uorf_length[2]+6)*a+(dist_uorf_stop_main_start[2]+3)*a #generates the length of the sequence of "." with a length of uorf_length+dist_uorf_stop_main_start
+    pin=genpin(loop_length[0],stem_length[0]) #generate the hairpin structure
+
+    patwithstruct=insert_with_delete(basepat,pin,dist_uorf_strx[0]) #insert with delete the hairpin structure into the sequence
+
+    sspattern=generate_stop_start_pattern(uorf_length[2],dist_uorf_stop_main_start[2]) 
+    boundpat=bindpattern(sspattern,patwithstruct)
+    inverse=takeinverse(boundpat)
+    return boundpat
+    #return str(len(basepat))
+
+print (generate())
+#dist_uorf_strx = [8, 12, 14, 16, 20, 24, 32]
+
+# distance between uORF stop and start codon
+# - spacing between uORF stop and main ORF start (low -> high reinitiation: 11, 45, 79 nt between stop and downstream AUG; Kozak 1987 MCB)
+#dist_uorf_stop_main_start = [10, 20, 30, 40, 50]
+
+# uORF length (not including start or stop codons) 
+#uorf_length = [0, 3, 12, 24, 39, 57, 99]
 
 
 
-pinlen=3
-#hpin="(((.....)))"
-
-for hpin in range(0,len(listofpins)):
-    for loc in range(0,overlen-len(listofpins[hpin])+1):
-        ovrall=a*overlen
-        cut=insert(ovrall,loc,listofpins[hpin])[0:overlen]
-        #print(cut)
-        #print(cut)
-        #masterlist.append(cut)
-    #print("length:"+str(overlen-len(listofpins[hpin])+1))
-#print(masterlist)
 
 
-
-#print takeinverse(list[0])
-
-#print get_rna_structure_energy(seq)
-
-#for i in stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % rnainverse_input_short):
-#    print i
-# HERE: get the sequence that comes out and its energy and predicted structure 
 
 
