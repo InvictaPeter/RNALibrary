@@ -27,7 +27,7 @@
 # - sumbout 5' TOP 
 # - distance btw 5' to uAUG - can enhance initiation when 5' leader is > 35 in yeast (Slusher et al 1991) 
 #testcommit
-import sys, os, argparse, subprocess, re
+import sys, os, argparse, subprocess, re, threading
 
 
 # run a command and return the stdout from it 
@@ -120,6 +120,7 @@ def takeinverse(instring): #simplified functionality for the inverse call from t
     tmp = stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % instring)
     tmp.next()
     seq = tmp.next().split()[0]
+    print(seq)
     return seq
 def insert_with_delete(base,insert,index):#tool to insert a string into another string at index with delete
     return base[0:index]+insert+base[index+len(insert):]
@@ -150,15 +151,52 @@ def generate(): #still developing function which will serve as the primary gener
     
     #inverse=takeinverse(boundpat) #uses RNAinverse to take the inverse of the given nucleotide pattern and structural sequence
     return #boundpat
-print(len(uorf_length)*len(dist_uorf_stop_main_start)*len(loop_length)*len(stem_length)*len(dist_uorf_strx))
+print("total sequences "+str(len(uorf_length)*len(dist_uorf_stop_main_start)*len(loop_length)*len(stem_length)*len(dist_uorf_strx)))
 generate()
 #print(masterlist)
+masterlist1=masterlist[0:len(masterlist)/2]
+masterlist2=masterlist[(len(masterlist)/2):]
 masterinverse=[]
-iterator=0
-for seqs in masterlist:
-    print(takeinverse(seqs))
-    print(str(iterator)+" `çof "+str(len(masterlist)))
-    iterator+=1
+
+
+def takeinversefromlist(instring): #simplified functionality for the inverse call from the input string
+    
+    tmp = stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % instring)
+    tmp.next()
+    seq = tmp.next().split()[0]
+    print(seq)
+    masterinverse.append(seq)
+    return
+
+
+def inverse_with_multithreading(adjoinedlist):
+    masterlist1=adjoinedlist[0:len(adjoinedlist)/2]
+    masterlist2=adjoinedlist[(len(adjoinedlist)/2):]
+    def thread1():
+        for bruh in masterlist1:
+            takeinversefromlist(bruh)
+    def thread2():
+        for bruh2 in masterlist2:
+            takeinversefromlist(bruh2)
+    
+    t1 = threading.Thread(target=thread1, args=())
+    t2 = threading.Thread(target=thread2, args=())
+    t1.start() 
+    # starting thread 2 
+    t2.start()
+    # wait until thread 2 is completely executed
+    t1.join() 
+    # wait until thread 2 is completely executed 
+    t2.join() 
+    
+  
+    # starting thread 1 
+    
+  
+    # both threads completely executed 
+    print("Done!") 
+inverse_with_multithreading(masterlist)
+
 
 
 #dist_uorf_strx = [8, 12, 14, 16, 20, 24, 32]
