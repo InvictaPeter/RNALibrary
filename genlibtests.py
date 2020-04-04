@@ -112,8 +112,7 @@ rnainverse_input_short = "...(((((....)))))....(((.(((....))).)))...\naugNNNNNug
 a="."
 b="("
 c=")"
-masterlist=[] 
-
+masterlist=[]
 def bindpattern(inseq,inpat): #tool to bind the dot-bracket notation to its inherent pattern
     return inseq+"\n"+inpat
 
@@ -135,18 +134,33 @@ def generate_stop_start_pattern(ulen,distusms): #writes a sequence of uORF lengt
     return "aug"+ulen*"N"+"uag"+(distusms)*"N"+"aug"
 
 def generate(): #still developing function which will serve as the primary generation. Will iterate through the input parameters, generating and inverse folding all permutation
-    basepat=(uorf_length[2]+6)*a+(dist_uorf_stop_main_start[2]+3)*a #generates the length of the sequence of "." with a length of uorf_length+dist_uorf_stop_main_start
-    pin=genpin(loop_length[0],stem_length[0]) #generate the hairpin structure
+    for lengths in uorf_length:
+        for distances in dist_uorf_stop_main_start:
+            ntpattern=generate_stop_start_pattern(lengths,distances) #generates the defined nucleotides and undefined regions of the sequence
+            basepat=(lengths+6)*a+(distances+3)*a #generates a "blank" pattern for the length of the structural sequence
+            for loops in loop_length:
+                for stems in stem_length:
+                    pin=genpin(loops,stems) #generate the hairpin structure 
+                    for startx in dist_uorf_strx:
+                        patwithstruct=insert_with_delete(basepat,pin,startx) #insert with delete the hairpin structure into the structural sequence
+                        boundpat=bindpattern(ntpattern,patwithstruct) #concatenate the nucleotide pattern to the structural pattern
+                        masterlist.append(boundpat)
 
-    patwithstruct=insert_with_delete(basepat,pin,dist_uorf_strx[0]) #insert with delete the hairpin structure into the sequence
+     
+    
+    #inverse=takeinverse(boundpat) #uses RNAinverse to take the inverse of the given nucleotide pattern and structural sequence
+    return #boundpat
+print(len(uorf_length)*len(dist_uorf_stop_main_start)*len(loop_length)*len(stem_length)*len(dist_uorf_strx))
+generate()
+#print(masterlist)
+masterinverse=[]
+iterator=0
+for seqs in masterlist:
+    print(takeinverse(seqs))
+    print(str(iterator)+" `çof "+str(len(masterlist)))
+    iterator+=1
 
-    sspattern=generate_stop_start_pattern(uorf_length[2],dist_uorf_stop_main_start[2]) 
-    boundpat=bindpattern(sspattern,patwithstruct)
-    inverse=takeinverse(boundpat)
-    return boundpat
-    #return str(len(basepat))
 
-print (generate())
 #dist_uorf_strx = [8, 12, 14, 16, 20, 24, 32]
 
 # distance between uORF stop and start codon
