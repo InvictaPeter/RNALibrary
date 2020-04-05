@@ -27,9 +27,9 @@
 # - sumbout 5' TOP 
 # - distance btw 5' to uAUG - can enhance initiation when 5' leader is > 35 in yeast (Slusher et al 1991) 
 #testcommit
-import sys, os, argparse, subprocess, re, threading
+import sys, os, argparse, subprocess, re, threading, numpy, time
 
-
+millis=int(round(time.time()*1000))
 # run a command and return the stdout from it 
 def stdout_from_command(command):
     p = subprocess.Popen(command, stdout = subprocess.PIPE, shell = True)
@@ -169,15 +169,41 @@ def takeinversefromlist(instring): #simplified functionality for the inverse cal
     return
 
 
+
+#numpy.savetxt("output.csv", a, delimiter=",")
+#a=numpy.append(a,[3,5], axis=1)
+print(a)
 def inverse_with_multithreading(adjoinedlist):
+
     masterlist1=adjoinedlist[0:len(adjoinedlist)/2]
     masterlist2=adjoinedlist[(len(adjoinedlist)/2):]
     def thread1():
-        for bruh in masterlist1:
-            takeinversefromlist(bruh)
+        timeseries_thread1 = numpy.array([[0, 0]])
+        k=0
+        for thread1iter in masterlist1:
+            thread1_basetime=int(round(time.time()*1000))
+            takeinversefromlist(thread1iter)
+            #print("thread 1: "+str(k)+" of "+str((len(masterlist1))))
+            thread1_computetime=(int(round(time.time()*1000)-thread1_basetime))
+            #print("thread 1 compute time: "+str(thread1_computetime))
+            thread1append= numpy.array([[k,thread1_computetime]])
+            timeseries_thread1=numpy.append(timeseries_thread1,thread1append,axis=0)
+            k+=1
+
+        numpy.savetxt("thread1.csv", timeseries_thread1, delimiter=",")
     def thread2():
-        for bruh2 in masterlist2:
-            takeinversefromlist(bruh2)
+        timeseries_thread2 = numpy.array([[0, 0]])
+        v=(len(adjoinedlist)/2)
+        for thread2iter in masterlist2:
+            thread2_basetime=int(round(time.time()*1000))
+            takeinversefromlist(thread2iter)
+            #print("thread 2: "+str(v)+" of "+str(len(masterlist)))
+            thread2_computetime=(int(round(time.time()*1000)-thread2_basetime))
+            #print("thread 2 compute time: "+str(thread2_computetime))
+            thread2append= numpy.array([[v,thread2_computetime]])
+            timeseries_thread2=numpy.append(timeseries_thread2,thread2append,axis=0)
+            v+=1
+        numpy.savetxt("thread2.csv", timeseries_thread2, delimiter=",")
     
     t1 = threading.Thread(target=thread1, args=())
     t2 = threading.Thread(target=thread2, args=())
