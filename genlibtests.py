@@ -27,7 +27,8 @@
 # - sumbout 5' TOP 
 # - distance btw 5' to uAUG - can enhance initiation when 5' leader is > 35 in yeast (Slusher et al 1991) 
 #testcommit
-import sys, os, argparse, subprocess, re, threading, numpy, time
+import sys, os, argparse, subprocess, re, multiprocessing, numpy, time
+from multiprocessing import Pool
 
 millis=int(round(time.time()*1000))
 # run a command and return the stdout from it 
@@ -116,12 +117,6 @@ masterlist=[]
 def bindpattern(inseq,inpat): #tool to bind the dot-bracket notation to its inherent pattern
     return inseq+"\n"+inpat
 
-def takeinverse(instring): #simplified functionality for the inverse call from the input string
-    tmp = stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % instring)
-    tmp.next()
-    seq = tmp.next().split()[0]
-    print(seq)
-    return seq
 def insert_with_delete(base,insert,index):#tool to insert a string into another string at index with delete
     return base[0:index]+insert+base[index+len(insert):]
 
@@ -168,74 +163,13 @@ def takeinversefromlist(instring): #simplified functionality for the inverse cal
     masterinverse.append(seq)
     return
 
-
-
-#numpy.savetxt("output.csv", a, delimiter=",")
-#a=numpy.append(a,[3,5], axis=1)
-print(a)
 def inverse_with_multithreading(adjoinedlist):
-
-    masterlist1=adjoinedlist[0:len(adjoinedlist)/2]
-    masterlist2=adjoinedlist[(len(adjoinedlist)/2):]
-    def thread1():
-        timeseries_thread1 = numpy.array([[0, 0]])
-        k=0
-        for thread1iter in masterlist1:
-            thread1_basetime=int(round(time.time()*1000))
-            takeinversefromlist(thread1iter)
-            #print("thread 1: "+str(k)+" of "+str((len(masterlist1))))
-            thread1_computetime=(int(round(time.time()*1000)-thread1_basetime))
-            #print("thread 1 compute time: "+str(thread1_computetime))
-            thread1append= numpy.array([[k,thread1_computetime]])
-            timeseries_thread1=numpy.append(timeseries_thread1,thread1append,axis=0)
-            k+=1
-
-        numpy.savetxt("thread1.csv", timeseries_thread1, delimiter=",")
-    def thread2():
-        timeseries_thread2 = numpy.array([[0, 0]])
-        v=(len(adjoinedlist)/2)
-        for thread2iter in masterlist2:
-            thread2_basetime=int(round(time.time()*1000))
-            takeinversefromlist(thread2iter)
-            #print("thread 2: "+str(v)+" of "+str(len(masterlist)))
-            thread2_computetime=(int(round(time.time()*1000)-thread2_basetime))
-            #print("thread 2 compute time: "+str(thread2_computetime))
-            thread2append= numpy.array([[v,thread2_computetime]])
-            timeseries_thread2=numpy.append(timeseries_thread2,thread2append,axis=0)
-            v+=1
-        numpy.savetxt("thread2.csv", timeseries_thread2, delimiter=",")
-    
-    t1 = threading.Thread(target=thread1, args=())
-    t2 = threading.Thread(target=thread2, args=())
-    t1.start() 
-    # starting thread 2 
-    t2.start()
-    # wait until thread 2 is completely executed
-    t1.join() 
-    # wait until thread 2 is completely executed 
-    t2.join() 
-    
-  
-    # starting thread 1 
-    
-  
-    # both threads completely executed 
+    p=Pool() #start multi-core processing pool with all available resources
+    result=p.map(takeinversefromlist,adjoinedlist) #use the pool toward processing the sequential list through the RNAinverse program
+    p.close() #stop the pool
+    p.join()
     print("Done!") 
 inverse_with_multithreading(masterlist)
-
-
-
-#dist_uorf_strx = [8, 12, 14, 16, 20, 24, 32]
-
-# distance between uORF stop and start codon
-# - spacing between uORF stop and main ORF start (low -> high reinitiation: 11, 45, 79 nt between stop and downstream AUG; Kozak 1987 MCB)
-#dist_uorf_stop_main_start = [10, 20, 30, 40, 50]
-
-# uORF length (not including start or stop codons) 
-#uorf_length = [0, 3, 12, 24, 39, 57, 99]
-
-
-
 
 
 
