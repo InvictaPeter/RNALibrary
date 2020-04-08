@@ -26,10 +26,10 @@
 # - add some sort of handle/etc for cloning, filter sequences if necessary 
 # - sumbout 5' TOP 
 # - distance btw 5' to uAUG - can enhance initiation when 5' leader is > 35 in yeast (Slusher et al 1991) 
-#testcommit
+
 import sys, os, argparse, subprocess, re, multiprocessing, numpy, time
 from multiprocessing import Pool
-
+from subprocess import Popen
 millis=int(round(time.time()*1000))
 # run a command and return the stdout from it 
 def stdout_from_command(command):
@@ -105,11 +105,6 @@ loop_length= [6]
 max_lib_size = len(start_codons) * len(stop_codons) * len(start_context_pm6pm1) * len(start_context_p4p5) * \
                len(dist_uorf_strx) * len(dist_uorf_stop_main_start) * len(uorf_length)
 
-rnainverse_input_long = "...(((((....)))))....(((.(((....))).))).......(((((....)))))....(((.(((....))).))).......(((((....)))))....(((.(((....))).))).......(((((....)))))....(((.(((....))).))).......(((((....)))))....(((.(((....))).)))....\naugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNNaugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNNaugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNNaugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNNaugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNNN"
-
-rnainverse_input_short = "...(((((....)))))....(((.(((....))).)))...\naugNNNNNugauNNNNNaugaNNNuNNNguuaNNNuNNNNNN"
-
-
 a="."
 b="("
 c=")"
@@ -139,7 +134,7 @@ def generate(): #still developing function which will serve as the primary gener
                     pin=genpin(loops,stems) #generate the hairpin structure 
                     for startx in dist_uorf_strx:
                         patwithstruct=insert_with_delete(basepat,pin,startx) #insert with delete the hairpin structure into the structural sequence
-                        boundpat=bindpattern(ntpattern,patwithstruct) #concatenate the nucleotide pattern to the structural pattern
+                        boundpat=bindpattern(patwithstruct,ntpattern) #concatenate the nucleotide pattern to the structural pattern
                         masterlist.append(boundpat)
 
      
@@ -149,28 +144,24 @@ def generate(): #still developing function which will serve as the primary gener
 print("total sequences "+str(len(uorf_length)*len(dist_uorf_stop_main_start)*len(loop_length)*len(stem_length)*len(dist_uorf_strx)))
 generate()
 #print(masterlist)
-masterlist1=masterlist[0:len(masterlist)/2]
-masterlist2=masterlist[(len(masterlist)/2):]
+
 masterinverse=[]
 
-
-def takeinversefromlist(instring): #simplified functionality for the inverse call from the input string
-    
+def takeinversefromstring(instring): #simplified functionality for the inverse call from the input string
     tmp = stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % instring)
     tmp.next()
     seq = tmp.next().split()[0]
-    print(seq)
-    masterinverse.append(seq)
+    print("\""+seq+"\""+",")
     return
 
 def inverse_with_multithreading(adjoinedlist):
     p=Pool() #start multi-core processing pool with all available resources
-    result=p.map(takeinversefromlist,adjoinedlist) #use the pool toward processing the sequential list through the RNAinverse program
+    result=p.map(takeinversefromstring,adjoinedlist) #use the pool toward processing the sequential list through the RNAinverse program
     p.close() #stop the pool
     p.join()
     print("Done!") 
-inverse_with_multithreading(masterlist)
+#inverse_with_multithreading(masterlist)
 
 
-
+#TODO: Correct Generation algorithm, it is 100% broken as of now.
 
