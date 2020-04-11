@@ -70,7 +70,7 @@ def get_rna_structure_energy(sequence):
 #  N  N  N  N  N  N  A  U  G  N  N
 
 # start codons to use
-start_codons = ["AUG, CUG, GUG, UUG"]
+start_codons = ["AUG", "CUG", "GUG", "UUG"]
 
 # stop codons
 stop_codons = ["TAA", "TGA", "TAG"] 
@@ -101,7 +101,7 @@ stem_length = [4]
 
 loop_length= [3]
 
-
+print(len(start_codons)*len(stop_codons)*len(start_codons)*len(start_context_p4p5)*len(dist_uorf_strx)*len(dist_uorf_stop_main_start)*4*3)
 max_lib_size = len(start_codons) * len(stop_codons) * len(start_context_pm6pm1) * len(start_context_p4p5) * \
                len(dist_uorf_strx) * len(dist_uorf_stop_main_start) * len(uorf_length)
 
@@ -116,13 +116,25 @@ def insert(inputstring, index, insertedstr): #tool to insert a string into anoth
     
 def generate_pin(stemlen,looplen): #generate a hairpin structure in dot-bracket notation
     return("("*stemlen+"."*looplen+")"*stemlen)
+"""
+for negstartcontexts in start_context_p4p5:
+        blankpattern=len(nucleotide_sequence)*"."
+        blankpatterns.append(insert_with_delete(blankpattern,negstartcontexts,len(blankpattern)-5))
+"""
+
 
 def generate_nucleotide_sequence(ulen,distusms): #writes a sequence of uORF length ulen and NCR length distusms intended for the nucleotide part of an RNAInverse call #TODO: Add negative context permutations
+    retlist=[]
     generate_nucleotide_sequence.length=ulen+distusms+9
-    return "aug"+ulen*"N"+"uag"+(distusms)*"N"+"aug"
-
-
-def generate_structure_permutations(nucleotide_sequence):
+    for elem in start_codons:
+        for elem2 in start_codons:
+            for elem3 in stop_codons:
+                retlist.append((elem+ulen*"N"+elem3+(distusms)*"N"+elem2))
+    return retlist
+testr="NNNNNNNNNNNNNN"
+bruhstr=insert_with_delete(testr,"BG",len(testr)-5)
+print(bruhstr)
+def generate_structure_permutations(nucleotide_sequence): #generate all structural permutations within the possibility of the given parameters stem length and loop length. Throws away sequences if impossible
     permutations=[]
     blankpattern=len(nucleotide_sequence)*"."
     for slen in stem_length:
@@ -133,35 +145,31 @@ def generate_structure_permutations(nucleotide_sequence):
                     permutations.append(permutation)
     return permutations
 
-def generate_nucleotide_permutations():
+def generate_nucleotide_permutations(): #generates the nucleotide (nonstructural) permutations within given parameters.
     nucleotide_permutations=[]
     for distances in dist_uorf_stop_main_start:
         for lengths in uorf_length:
-            nucleotide_permutations.append(generate_nucleotide_sequence(lengths,distances))
+            for sequences in generate_nucleotide_sequence(lengths,distances):
+                nucleotide_permutations.append(sequences)
     nucleotide_permutations.sort(key=len)
     return nucleotide_permutations
 
 batches=[] #A list of lists, containing data in the following format: [nucleotide sequence, structural permutation 1, structural permutation 2, etc.]
+
 for item in generate_nucleotide_permutations():
     templist=[item,]
     for item2 in generate_structure_permutations(item):
         templist.append(item2)
     batches.append(templist)
+
 masterbatch=[] # a list containing the final "bound" inputs for RNAinverse. e.g. ["augNNNNuaaNNaug\n....(((...)))...", etc.] 
+
 for item3 in batches:
     bindseq= item3[0]
     for bindstruct in item3[1:]:
         bound=bindpattern(bindstruct,bindseq)
         masterbatch.append(bound)
-#for item5 in masterbatch:
-    #print(item5)
-
-
-print("total sequences "+str(len(uorf_length)*len(dist_uorf_stop_main_start)*len(loop_length)*len(stem_length)*len(dist_uorf_strx)))
-
-#print(masterlist)
-
-masterinverse=[]
+print("total sequences "+ str(len(masterbatch)))
 
 def takeinversefromstring(instring): #simplified functionality for the inverse call from the input string
     global bruh
@@ -170,13 +178,15 @@ def takeinversefromstring(instring): #simplified functionality for the inverse c
     seq = tmp.next().split()[0]
     
     print("\""+seq+"\""+",")
-    return
-
+    return seq
 def inverse_with_multithreading(adjoinedlist):
     p=Pool() #start multi-core processing pool with all available resources
     result=p.map(takeinversefromstring,adjoinedlist) #use the pool toward processing the sequential list through the RNAinverse program
     p.close() #stop the pool
     p.join()
     print("Done!") 
-inverse_with_multithreading(masterbatch)
+    print(result)
+#inverse_with_multithreading(masterbatch[0:10]) 
+#TODO: Permutate over start and stop codons, permutate the start contexts
+
 
