@@ -101,7 +101,7 @@ stem_length = [4]
 
 loop_length= [3]
 
-print(len(start_codons)*len(stop_codons)*len(start_codons)*len(start_context_p4p5)*len(dist_uorf_strx)*len(dist_uorf_stop_main_start)*4*3)
+#print(len(start_codons)*len(stop_codons)*len(start_codons)*len(start_context_p4p5)*len(dist_uorf_strx)*len(dist_uorf_stop_main_start)*4*3)
 max_lib_size = len(start_codons) * len(stop_codons) * len(start_context_pm6pm1) * len(start_context_p4p5) * \
                len(dist_uorf_strx) * len(dist_uorf_stop_main_start) * len(uorf_length)
 
@@ -116,11 +116,6 @@ def insert(inputstring, index, insertedstr): #tool to insert a string into anoth
     
 def generate_pin(stemlen,looplen): #generate a hairpin structure in dot-bracket notation
     return("("*stemlen+"."*looplen+")"*stemlen)
-"""
-for negstartcontexts in start_context_p4p5:
-        blankpattern=len(nucleotide_sequence)*"."
-        blankpatterns.append(insert_with_delete(blankpattern,negstartcontexts,len(blankpattern)-5))
-"""
 
 
 def generate_nucleotide_sequence(ulen,distusms): #writes a sequence of uORF length ulen and NCR length distusms intended for the nucleotide part of an RNAInverse call #TODO: Add negative context permutations
@@ -129,11 +124,9 @@ def generate_nucleotide_sequence(ulen,distusms): #writes a sequence of uORF leng
     for elem in start_codons:
         for elem2 in start_codons:
             for elem3 in stop_codons:
-                retlist.append((elem+ulen*"N"+elem3+(distusms)*"N"+elem2))
+                for contexts in start_context_p4p5:
+                    retlist.append((elem+ulen*"N"+elem3+(distusms-5)*"N"+contexts+3*"N"+elem2))
     return retlist
-testr="NNNNNNNNNNNNNN"
-bruhstr=insert_with_delete(testr,"BG",len(testr)-5)
-print(bruhstr)
 def generate_structure_permutations(nucleotide_sequence): #generate all structural permutations within the possibility of the given parameters stem length and loop length. Throws away sequences if impossible
     permutations=[]
     blankpattern=len(nucleotide_sequence)*"."
@@ -186,7 +179,6 @@ def inverse_with_multithreading(adjoinedlist):
     p.join()
     print("Done!") 
     print(result)
-#inverse_with_multithreading(masterbatch[0:10]) 
-#TODO: Permutate over start and stop codons, permutate the start contexts
+inverse_with_multithreading(masterbatch[0:10]) 
 
 
