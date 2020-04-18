@@ -148,7 +148,7 @@ def generate_nucleotide_permutations(): #generates the nucleotide (nonstructural
     nucleotide_permutations.sort(key=len)
     return nucleotide_permutations
 
-batches=[] #A list of lists, containing data in the following format: [nucleotide sequence, structural permutation 1, structural permutation 2, etc.]
+batches=[] #A list of lists, containing data in the following format: [[nucleotide sequence 1, structural permutation 1, structural permutation 2, etc.], [nuc. seq. 2, sp1,sp2,etc.]etc.]
 
 for item in generate_nucleotide_permutations():
     templist=[item,]
