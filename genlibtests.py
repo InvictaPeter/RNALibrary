@@ -31,6 +31,7 @@ import sys, os, argparse, subprocess, re, multiprocessing, numpy, time
 from multiprocessing import Pool
 from subprocess import Popen
 millis=int(round(time.time()*1000))
+
 # run a command and return the stdout from it 
 def stdout_from_command(command):
     p = subprocess.Popen(command, stdout = subprocess.PIPE, shell = True)
@@ -165,12 +166,16 @@ for item3 in batches:
 print("total sequences "+ str(len(masterbatch)))
 
 def takeinversefromstring(instring): #simplified functionality for the inverse call from the input string
+    file1 = open("Output1.txt","a") 
     global bruh
     tmp = stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % instring)
-    tmp.next()
-    seq = tmp.next().split()[0]
     
-    print("\""+seq+"\""+",")
+    lead=tmp.next()
+    seq = tmp.next().split()[0]
+    print(instring)
+    print(lead.rstrip())
+    print(seq+"\n")
+    file1.write(instring+'\n'+lead.rstrip()+'\n'+seq+'\n\n')
     return seq
 def inverse_with_multithreading(adjoinedlist):
     p=Pool() #start multi-core processing pool with all available resources
@@ -179,6 +184,11 @@ def inverse_with_multithreading(adjoinedlist):
     p.join()
     print("Done!") 
     print(result)
-inverse_with_multithreading(masterbatch[0:10]) 
+
+def main():
+    inverse_with_multithreading(masterbatch) 
+if __name__ == '__main__':
+    main()
+
 
 
