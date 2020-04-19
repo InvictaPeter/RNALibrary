@@ -191,9 +191,13 @@ subbatch3=masterbatch[2::6]
 subbatch4=masterbatch[3::6]
 subbatch5=masterbatch[4::6]
 subbatch6=masterbatch[5::6]
+splitbatch1=subbatch6[0:(3*len(subbatch6)/5)]
+splitbatch2=subbatch6[(3*len(subbatch6)/5):]
 
 def main():
-    inverse_with_multithreading(subbatch1) 
+    print(len(subbatch6))
+    
+    #inverse_with_multithreading() 
 if __name__ == '__main__':
     open('subbatch1.txt', 'w').close()
     main()
