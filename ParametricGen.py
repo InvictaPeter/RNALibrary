@@ -30,6 +30,7 @@
 import sys, os, argparse, subprocess, re, multiprocessing, numpy, time
 from multiprocessing import Pool
 from subprocess import Popen
+import NewMetrics
 millis=int(round(time.time()*1000))
 
 # run a command and return the stdout from it 
@@ -40,7 +41,12 @@ def stdout_from_command(command):
 
 # gets the folding energy of a sequence. returns a tuple containing energies (centroid_energy, structure)
 # RNAfold courtesy viennaRNA
-def get_rna_structure_energy(sequence):
+def file_len(fname):
+    with open(fname) as g:
+        for i, l in enumerate(g):
+            pass
+    return i + 1
+def get_rna_structure_energy(sequence): #From Original Program
     if len(sequence) < 1:
         return (0, 0)
 
@@ -63,18 +69,52 @@ def get_rna_structure_energy(sequence):
     #fifth line has the MEA
     MEA = float(re.sub('[{}]','', lines.next().split()[-2]))
 
-    return (nrg, strx)
-                                                                                                                          
+    return (nrg)
+def get_moststable(sequence): #RNALfold Stable Structure Finder
+    a=[]
+    if len(sequence) < 1:
+        return (0, 0)
+    lines = stdout_from_command("echo %s | RNALfold --span=50" % sequence)
+    for i in range(200): #Get all the outputs. Probably not over 200. If it is, make this number bigger rinse repeat
+        try:
+            p=lines.next()
+            a.append(p)
+        except:
+            pass
+    stableseq=(a[-2])[0:-1]
+    stableenergy=(float((a[-1])[2:-2]))
+    return stableseq, stableenergy
+
+def countNUG(inseq):
+    return inseq.count('AUG')+inseq.count('UUG')+inseq.count('CUG')+inseq.count('GUG')
+def findStop(inseq):
+    return inseq.count("UAA")+inseq.count("UGA")+inseq.count("UAG")
+def GCcontent(inseq):
+    return float((inseq.count("G")+inseq.count("C")))/len(inseq)*100
+def GenMetrics(inseq): 
+    print("5' UTR length: "+ str(len(inseq)))
+    print("5' UTR folding free energy: "+str(get_rna_structure_energy(inseq)))
+    print("Lowest MFE of sequence of length 50: " + str(get_moststable(inseq)[1]))
+    print("Amount of upstream NUG occurances: "+str(countNUG(inseq)))
+    print("Amount of upstream stop codon occurances: "+str(findStop(inseq)))
+    print("Percent GC content: "+str(GCcontent(inseq)))
+                                                                                                         
 # legend - numbering around the start codon
 
 #  -6 -5 -4 -3 -2 -1 +1 +2 +3 +4 +5 
 #  N  N  N  N  N  N  A  U  G  N  N
 
+# # start codons to use
+# start_codons = ["AUG", "CUG", "GUG", "UUG"]
+
+# # stop codons
+# stop_codons = ["UAA", "UGA", "UAG"] 
+
 # start codons to use
-start_codons = ["AUG", "CUG", "GUG", "UUG"]
+start_codons = ["aug", "cug", "gug", "uug"]
 
 # stop codons
-stop_codons = ["TAA", "TGA", "TAG"] 
+stop_codons = ["uaa", "uga", "uag"] 
 
 # start codon contexts to use 
 #start_context = ["GCCACC", "GCCGCC", "GUUACC", "GUUGCC", "GUUUCC"]
@@ -83,8 +123,8 @@ stop_codons = ["TAA", "TGA", "TAG"]
 start_context_pm6pm1 = ["UGAUAU", "AUCUUC", "UGCUUG", "GGCGCU", "AGAGUG", "AGCGCU", "UGUGGA", "UGCGUG", "AUCGCA"]
 
 # +4 and +5 start codon contexts from Noderer (weak to strong)
-start_context_p4p5 = ["CC", "AU", "UC", "CA", "AC", "GC"]
-
+#start_context_p4p5 = ["CC", "AU", "UC", "CA", "AC", "GC"]
+start_context_p4p5 = ["cc", "au", "uc", "ca", "ac", "gc"]
 # all distances in nucleotides (not codons) 
 
 # distance between uORF start and structure - 8nt is mostly upstream, 14nt is ~100% upstream, and 32 nt is ~50/50 (Kozak PNAS 1990)
@@ -101,11 +141,11 @@ uorf_length_min = [0, 3, 12, 24, 39, 57, 99]
 stem_length = [4]
 
 loop_length= [3]
+InverseReady=[]
 
 
-
-def bindpattern(inseq,inpat): #tool to bind the dot-bracket notation to its inherent pattern
-    return inseq+"\n"+inpat
+def bindpattern(inpat,inseq): #tool to bind the dot-bracket notation to its inherent pattern
+    return inpat+"\n"+inseq
 
 def insert_with_delete(base,insert,index):#tool to insert a string into another string at index with delete
     return base[0:index]+insert+base[index+len(insert):]
@@ -160,7 +200,7 @@ def generate_nucleotide_permutations(): #generates the nucleotide (nonstructural
     return nucleotide_permutations
 
 def takeinversefromstring(instring): #simplified functionality for the inverse call from the input string
-    file1 = open("subbatch1.txt","a") 
+    file1 = open("testrun.txt","a") 
     global bruh
     tmp = stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % instring)
     
@@ -170,6 +210,7 @@ def takeinversefromstring(instring): #simplified functionality for the inverse c
     print(lead.rstrip())
     print(seq+"\n")
     file1.write(instring+'\n'+lead.rstrip()+'\n'+seq+'\n\n')
+    file1.close()
     return seq
 def inverse_with_multithreading(adjoinedlist):
     p=Pool() #start multi-core processing pool with all available resources
@@ -185,7 +226,6 @@ def LengthGen(length):
     g=[]
     orderednts=[]
     pairrdy=[]
-    InverseReady=[]
     for i in range(0,length-14+1): #generate all the permutations of the nucleotide seq. NOTE TO SELF: DONT PLAY WITH THE CONSTANTS HERE. THEY WORK.
         g.append(generate_nucleotide_sequence_RD(i,length-14-i))
     # print((g[0])[0])
@@ -200,7 +240,7 @@ def LengthGen(length):
             pairrdy.append(pair)
     #print(pairrdy)
     for item in pairrdy:
-        InverseReady.append(bindpattern(item[0],item[1]))
+        InverseReady.append(bindpattern(item[1],item[0]))
     print(len(InverseReady))
     # for i in generate_structure_permutations((g[0])[0]):
     #     print(len(i))
@@ -209,9 +249,10 @@ def LengthGen(length):
 
     
 if __name__ == '__main__':
-    LengthGen(150)
-    #open('subbatch1.txt', 'w').close()
-    #main()
-
-
+    open('testrun.txt', 'w').close()
+    LengthGen(25)
+    inverse_with_multithreading(InverseReady[0:30])
+    NewMetrics.RetrieveFile(len(InverseReady[0:30]))
+    NewMetrics.GenMetricFile()
+    
 

@@ -1,25 +1,19 @@
 import time
 
 import sys, os, argparse, subprocess, re
-
+z=[]
+count=[]
+metriclist=[]
 def stdout_from_command(command):
     p = subprocess.Popen(command, stdout = subprocess.PIPE, shell = True)
     return iter(p.stdout.readline, b'')
-
-f = open("FinalBatch.txt", "r")
 
 def file_len(fname):
     with open(fname) as g:
         for i, l in enumerate(g):
             pass
     return i + 1
-z=[]
-for x in range(64224*3+2):
-	temp=f.readline()
-	if(temp[0]=="."):
-		f.readline()
-		temp2=f.readline().split()
-		z.append(temp2[0])
+
 
 def get_rna_structure_energy(sequence): #From Original Program
     if len(sequence) < 1:
@@ -59,29 +53,72 @@ def get_moststable(sequence): #RNALfold Stable Structure Finder
     stableseq=(a[-2])[0:-1]
     stableenergy=(float((a[-1])[2:-2]))
     return stableseq, stableenergy
-c=[]
-for b in z:
-    if (len(b)>150):
-        c.append(b)
-# length (which should be constant)
-# folding free energy for the entire 5' UTR
-# folding free energy for the most stable 50 nucleotide stretch (which can be computed using another ViennaRNA program called RNALfold)
-# number of upstream NUG codons
-# number of upstream stop codons
-# GC content (percent of the UTR that is G/C nucleotides)
+
 def countNUG(inseq):
 	return inseq.count('AUG')+inseq.count('UUG')+inseq.count('CUG')+inseq.count('GUG')
 def findStop(inseq):
 	return inseq.count("UAA")+inseq.count("UGA")+inseq.count("UAG")
 def GCcontent(inseq):
 	return float((inseq.count("G")+inseq.count("C")))/len(inseq)*100
-def GenMetrics(inseq): 
-	print("5' UTR length: "+ str(len(inseq)))
-	print("5' UTR folding free energy: "+str(get_rna_structure_energy(inseq)))
-	print("Lowest MFE of sequence of length 50: " + str(get_moststable(inseq)[1]))
-	print("Amount of upstream NUG occurances: "+str(countNUG(inseq)))
-	print("Amount of upstream stop codon occurances: "+str(findStop(inseq)))
-	print("Percent GC content: "+str(GCcontent(inseq)))
-GenMetrics(c[23]) 
+def verifystructure(sequence,structure): #From Original Program
+    if len(sequence) < 1:
+        return (0, 0)
+    lines = stdout_from_command("echo %s | RNAfold --noPS --MEA -p" % sequence)
+   
+    #first line is just the seq - skip
+    lines.next()
+    secstruct=lines.next().split()[0]
+    if(secstruct==structure):
+        return 'Verified'
+    else:
+        return 'Discard'
+def GenMetrics(inseq,instruct): 
+	metrics=[]
+	metrics.append(instruct)
+	metrics.append(inseq)
+	metrics.append("5' UTR length: "+ str(len(inseq)))
+	metrics.append("5' UTR folding free energy: "+str(get_rna_structure_energy(inseq)))
+	metrics.append("Lowest MFE of sequence of length 50: " + str(get_moststable(inseq)[1]))
+	metrics.append("Amount of upstream NUG occurances: "+str(countNUG(inseq)))
+	metrics.append("Amount of upstream stop codon occurances: "+str(findStop(inseq)))
+	metrics.append("Percent GC content: "+str(GCcontent(inseq)))
+	metrics.append("Match: "+ verifystructure(inseq,instruct))
+	metrics.append("\n")
+	return metrics
+def RetrieveFile(halffilelen):
+	f = open("testrun.txt", "r")
+	
+	counter=0
+	for x in range(halffilelen*2):
+		temp=f.readline()
+		if(temp[0]=="."):
+			structure=temp.split()
+			z.append(structure[0])
+			count.append(counter)
+			f.readline()
+			f.readline()
+			targetseq=f.readline().split()#final line of the rnainverse command is usually best sequence
+			z.append(targetseq[0])
+		counter+=1	
+	targetstructs=z[0::2]
+	counter=0
+	
+	#print(len(targetstructs))
+	for item in z[1::2]:
+		# print(targetstructs[counter])
+		# print(item)
+		metriclist.append(GenMetrics(item,targetstructs[counter]))
+		counter+=1
+		
+	f.close()
+def GenMetricFile():
+	f=open("Metrics.txt", "w")
+	for item in metriclist:
+		for item2 in item:
+			print(item2)
+			f.write(item2)
+			f.write('\n')
+			
+
 
 

@@ -76,6 +76,12 @@ start_codons = ["AUG", "CUG", "GUG", "UUG"]
 # stop codons
 stop_codons = ["TAA", "TGA", "TAG"] 
 
+# start codons to use
+start_codons = ["AUG", "CUG", "GUG", "UUG"]
+
+# stop codons
+stop_codons = ["TAA", "TGA", "TAG"] 
+
 # start codon contexts to use 
 #start_context = ["GCCACC", "GCCGCC", "GUUACC", "GUUGCC", "GUUUCC"]
 
