@@ -85,20 +85,22 @@ def get_moststable(sequence): #RNALfold Stable Structure Finder
     stableenergy=(float((a[-1])[2:-2]))
     return stableseq, stableenergy
 
-def countNUG(inseq):
-    return inseq.count('AUG')+inseq.count('UUG')+inseq.count('CUG')+inseq.count('GUG')
-def findStop(inseq):
-    return inseq.count("UAA")+inseq.count("UGA")+inseq.count("UAG")
-def GCcontent(inseq):
-    return float((inseq.count("G")+inseq.count("C")))/len(inseq)*100
-def GenMetrics(inseq): 
-    print("5' UTR length: "+ str(len(inseq)))
-    print("5' UTR folding free energy: "+str(get_rna_structure_energy(inseq)))
-    print("Lowest MFE of sequence of length 50: " + str(get_moststable(inseq)[1]))
-    print("Amount of upstream NUG occurances: "+str(countNUG(inseq)))
-    print("Amount of upstream stop codon occurances: "+str(findStop(inseq)))
-    print("Percent GC content: "+str(GCcontent(inseq)))
-                                                                                                         
+def GenDiversity():
+    with open('diversity.txt') as j:
+        line_count = 0
+        for line in j:
+            line_count += 1
+    j.close()
+    diversityscores=[]
+    f = open("diversity.txt", "r")
+    for i in range(0,line_count):
+        temp=f.readline()
+        if(temp!="" and temp!="\n"):
+            if(temp[1]=="1"):
+                sub=temp.split()
+                diversityscores.append(sub[1])
+    return diversityscores
+
 # legend - numbering around the start codon
 
 #  -6 -5 -4 -3 -2 -1 +1 +2 +3 +4 +5 
@@ -251,9 +253,9 @@ def LengthGen(length):
 if __name__ == '__main__':
     open('testrun.txt', 'w').close()
     LengthGen(35)
-    inverse_with_multithreading(InverseReady[0:50])
-    NewMetrics.RetrieveFile(len(InverseReady[0:50]))
-    NewMetrics.GenMetricFile()
+    inverse_with_multithreading(InverseReady[0:20])
     subprocess.call ("Rscript TestPipeline1.R", shell=True)
-    
+    diversityscores=GenDiversity()
+    NewMetrics.RetrieveFile(len(InverseReady[0:20]))
+    NewMetrics.GenMetricFile(diversityscores)
 

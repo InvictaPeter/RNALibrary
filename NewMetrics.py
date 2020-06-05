@@ -83,7 +83,7 @@ def GenMetrics(inseq,instruct):
 	metrics.append("Amount of upstream stop codon occurances: "+str(findStop(inseq)))
 	metrics.append("Percent GC content: "+str(GCcontent(inseq)))
 	metrics.append("Match: "+ verifystructure(inseq,instruct))
-	metrics.append("\n")
+	
 	return metrics
 def RetrieveFile(halffilelen):
 	f = open("testrun.txt", "r")
@@ -102,22 +102,24 @@ def RetrieveFile(halffilelen):
 		counter+=1	
 	targetstructs=z[0::2]
 	counter=0
-	
-	#print(len(targetstructs))
 	for item in z[1::2]:
-		# print(targetstructs[counter])
-		# print(item)
 		metriclist.append(GenMetrics(item,targetstructs[counter]))
 		counter+=1
 		
 	f.close()
-def GenMetricFile():
+def GenMetricFile(diversity):
 	f=open("Metrics.txt", "w")
+	iterable=0
 	for item in metriclist:
 		for item2 in item:
 			print(item2)
 			f.write(item2)
 			f.write('\n')
+		f.write("diversity: "+str(diversity[iterable]))
+		iterable+=1
+		f.write('\n')
+		f.write('\n')
+		
 			
 
 
