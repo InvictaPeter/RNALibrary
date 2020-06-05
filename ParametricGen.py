@@ -250,9 +250,10 @@ def LengthGen(length):
     
 if __name__ == '__main__':
     open('testrun.txt', 'w').close()
-    LengthGen(25)
-    inverse_with_multithreading(InverseReady[0:30])
-    NewMetrics.RetrieveFile(len(InverseReady[0:30]))
+    LengthGen(35)
+    inverse_with_multithreading(InverseReady[0:50])
+    NewMetrics.RetrieveFile(len(InverseReady[0:50]))
     NewMetrics.GenMetricFile()
+    subprocess.call ("Rscript TestPipeline1.R", shell=True)
     
 
