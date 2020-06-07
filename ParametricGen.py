@@ -214,7 +214,7 @@ def takeinversefromstring(instring): #simplified functionality for the inverse c
     file1.write(instring+'\n'+lead.rstrip()+'\n'+seq+'\n\n')
     file1.close()
     return seq
-def inverse_with_multithreading(adjoinedlist):
+def fullresource_inverse(adjoinedlist):
     p=Pool() #start multi-core processing pool with all available resources
     result=p.map(takeinversefromstring,adjoinedlist) #use the pool toward processing the sequential list through the RNAinverse program
     p.close() #stop the pool
@@ -230,9 +230,6 @@ def LengthGen(length):
     pairrdy=[]
     for i in range(0,length-14+1): #generate all the permutations of the nucleotide seq. NOTE TO SELF: DONT PLAY WITH THE CONSTANTS HERE. THEY WORK.
         g.append(generate_nucleotide_sequence_RD(i,length-14-i))
-    # print((g[0])[0])
-    # print((g[1])[0])
-    # print((g[2])[0])
     for e in range(len((g[0])[0])):
         for i in range(len(g)):
             orderednts.append((g[i])[e])
@@ -244,18 +241,15 @@ def LengthGen(length):
     for item in pairrdy:
         InverseReady.append(bindpattern(item[1],item[0]))
     print(len(InverseReady))
-    # for i in generate_structure_permutations((g[0])[0]):
-    #     print(len(i))
-    # for i in range(len(g)):
-    #     print((g[i])[0])
+    
 
     
 if __name__ == '__main__':
     open('testrun.txt', 'w').close()
-    LengthGen(35)
-    inverse_with_multithreading(InverseReady[0:20])
+    LengthGen(75)
+    fullresource_inverse(InverseReady[0:10])
     subprocess.call ("Rscript TestPipeline1.R", shell=True)
     diversityscores=GenDiversity()
-    NewMetrics.RetrieveFile(len(InverseReady[0:20]))
+    NewMetrics.RetrieveFile(len(InverseReady[0:10]))
     NewMetrics.GenMetricFile(diversityscores)
 

@@ -1,9 +1,10 @@
 import time
 
-import sys, os, argparse, subprocess, re
+import sys, os, argparse, subprocess, re, Levenshtein
 z=[]
 count=[]
 metriclist=[]
+LDistances=[]
 def stdout_from_command(command):
     p = subprocess.Popen(command, stdout = subprocess.PIPE, shell = True)
     return iter(p.stdout.readline, b'')
@@ -72,7 +73,19 @@ def verifystructure(sequence,structure): #From Original Program
         return 'Verified'
     else:
         return 'Discard'
-def GenMetrics(inseq,instruct): 
+
+def Levenshtein_distance(structures):
+	distances=[]
+	for i in range(1,len(structures)+1):
+		candidate=structures[i-1]
+		restofseq=[structures[0:i-1]+structures[i:]]
+		diversitysum=0
+		for item in restofseq[0]:
+			diversitysum+=Levenshtein.distance(candidate,item)
+		distances.append(float(diversitysum/(float(str(len(structures))+'.0'))))
+	return distances
+
+def GenMetrics(inseq,instruct,counter): 
 	metrics=[]
 	metrics.append(instruct)
 	metrics.append(inseq)
@@ -83,11 +96,12 @@ def GenMetrics(inseq,instruct):
 	metrics.append("Amount of upstream stop codon occurances: "+str(findStop(inseq)))
 	metrics.append("Percent GC content: "+str(GCcontent(inseq)))
 	metrics.append("Match: "+ verifystructure(inseq,instruct))
+	metrics.append("Average Structure Edit Distance: "+ str(LDistances[counter]))
 	
 	return metrics
 def RetrieveFile(halffilelen):
+	global LDistances
 	f = open("testrun.txt", "r")
-	
 	counter=0
 	for x in range(halffilelen*2):
 		temp=f.readline()
@@ -102,8 +116,10 @@ def RetrieveFile(halffilelen):
 		counter+=1	
 	targetstructs=z[0::2]
 	counter=0
+	structures=z[0::2]
+	LDistances=Levenshtein_distance(structures)
 	for item in z[1::2]:
-		metriclist.append(GenMetrics(item,targetstructs[counter]))
+		metriclist.append(GenMetrics(item,targetstructs[counter],counter))
 		counter+=1
 		
 	f.close()
@@ -115,11 +131,11 @@ def GenMetricFile(diversity):
 			print(item2)
 			f.write(item2)
 			f.write('\n')
-		f.write("diversity: "+str(diversity[iterable]))
+		f.write("normality: "+str(diversity[iterable]))
 		iterable+=1
 		f.write('\n')
 		f.write('\n')
-		
+
 			
 
 

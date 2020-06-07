@@ -1,6 +1,4 @@
-import time
-f = open("testrun.txt", "r")
-
+import operator
 def file_len(fname):
     with open(fname) as g:
         for i, l in enumerate(g):
@@ -8,47 +6,41 @@ def file_len(fname):
     return i + 1
 z=[]
 b=[]
-print("total lines: "+str(file_len("testrun.txt")))
-for x in range(file_len("testrun.txt")):
-	temp=f.readline()
-	if(temp!=''):
-		z.append(temp)
-	f.readline()
-	f.readline()
-	temp=f.readline()
-	if(temp!=''):
-		z.append(temp)
-	f.readline()
-for x in z[0::2]:
-	for y in z[1::2]:
-		b.append(x+y[0:-2])
+def pick_top_n_diversity(n):
+	v = open("Metrics.txt", "r")
+	c=0
+	o=0
+	it=11
+	it2=2
+	t=0
+	listofseqs=[]
+	listofnormvals=[]
+	for x in range(file_len("Metrics.txt")):
+		temp=v.readline()
+		if(temp[0]=="M"):
+			if(temp[7:8]=="V"):
+				c+=1
+			o+=1
+		if(it%12==0):
+			listofseqs.append(temp[0:-1])
+		if(it2%12==0):
+			listofnormvals.append(float(temp[11:-1]))
+		it+=1
+		it2+=1
+	dictionary = dict(zip(listofseqs, listofnormvals))
+	sorted_x = sorted(dictionary.items(), key=operator.itemgetter(1))
+	v.close()
+	return sorted_x[0:n]
+
+for x in pick_top_n_diversity(20):
+	print(x)
+# print(t)
+# v.close()
+# def topseq(number_of_sequences):
+
+# print(str(float(c*100/o))+"% verification success yielding "+str(c)+" qualified sequences")
 
 
-def comparestring(string1,string2):
-	counter=0
-	similarity=0
-	for letter in string1:
-		if letter == string2[counter]:
-			similarity+=1
-		counter+=1
-	return similarity
-
-
-def calcdiff(inlist):
-	Dict={}
-	enum=0
-	#print(inlist)
-	for basestr in inlist:
-		listexceptstring=inlist[:enum]+inlist[enum+1:]
-		#print(listexceptstring)
-		a=0
-		for elem in listexceptstring:
-			a+=comparestring(basestr,elem)
-		Dict.update( {basestr : a} )
-		enum+=1
-	return Dict
-y=calcdiff(b)
-print(y)
 
 
 
