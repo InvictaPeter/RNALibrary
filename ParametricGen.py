@@ -246,10 +246,10 @@ def LengthGen(length):
     
 if __name__ == '__main__':
     open('testrun.txt', 'w').close()
-    LengthGen(75)
-    fullresource_inverse(InverseReady[0:10])
+    LengthGen(150)
+    fullresource_inverse(InverseReady[0:75])
     subprocess.call ("Rscript TestPipeline1.R", shell=True)
     diversityscores=GenDiversity()
-    NewMetrics.RetrieveFile(len(InverseReady[0:10]))
+    NewMetrics.RetrieveFile(len(InverseReady[0:75]))
     NewMetrics.GenMetricFile(diversityscores)
 
