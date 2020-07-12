@@ -27,7 +27,7 @@
 # - sumbout 5' TOP 
 # - distance btw 5' to uAUG - can enhance initiation when 5' leader is > 35 in yeast (Slusher et al 1991) 
 
-import sys, os, argparse, subprocess, re, multiprocessing, numpy, time,random
+import sys, os, argparse, subprocess, re, multiprocessing, numpy, time,random, shutil
 from multiprocessing import Pool
 from subprocess import Popen
 import NewMetrics
@@ -202,7 +202,10 @@ def generate_nucleotide_permutations(): #generates the nucleotide (nonstructural
     return nucleotide_permutations
 
 def takeinversefromstring(instring): #simplified functionality for the inverse call from the input string
-    file1 = open("testrun.txt","a") 
+    
+    uname=str(random.randint(0,1000000))
+    open(uname+".txt","w").close() 
+    file1 = open(uname+".txt","w") 
     global bruh
     tmp = stdout_from_command("echo \'%s\' | RNAinverse -Fmp -f 0.5 -d2" % instring)
     
@@ -243,14 +246,37 @@ def LengthGen(length):
     print(len(InverseReady))
     random.shuffle(InverseReady)
     
+def assemble():
+    namelist=os.listdir("/Users/Peter/Desktop/RNALibrary/AssemblySeq/")
+
+    for name in namelist:
+        print(name)
+        with open(name) as f:
+            with open("testrun.txt", "a") as f1:
+                for line in f:
+                    f1.write(line)
+    f1.close()
+
+    shutil.copyfile('/Users/Peter/Desktop/RNALibrary/AssemblySeq/testrun.txt','/Users/Peter/Desktop/RNALibrary/testrun.txt')
+    os.chdir("/Users/Peter/Desktop/RNALibrary/")
+    shutil.rmtree('AssemblySeq')
 
     
 if __name__ == '__main__':
     open('testrun.txt', 'w').close()
-    LengthGen(55)
-    fullresource_inverse(InverseReady[0:750])
+    
+    try:
+        shutil.rmtree('AssemblySeq')
+    except:
+        pass
+    os.mkdir("/Users/Peter/Desktop/RNALibrary/AssemblySeq/")
+    os.chdir("/Users/Peter/Desktop/RNALibrary/AssemblySeq/")
+
+    LengthGen(25)
+    fullresource_inverse(InverseReady[0:100])
+    assemble()
     subprocess.call ("Rscript TestPipeline1.R", shell=True)
     diversityscores=GenDiversity()
-    NewMetrics.RetrieveFile(750)
+    NewMetrics.RetrieveFile(100)
     NewMetrics.GenMetricFile(diversityscores)
 

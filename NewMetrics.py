@@ -82,7 +82,7 @@ def Levenshtein_distance(structures):
 		diversitysum=0
 		for item in restofseq[0]:
 			diversitysum+=Levenshtein.distance(candidate,item)
-		distances.append(float(diversitysum/(float(str(len(structures))+'.0'))))
+		distances.append(float(diversitysum/float(str(len(structures))+".0")))
 	return distances
 
 def GenMetrics(inseq,instruct,counter): 
@@ -117,10 +117,13 @@ def RetrieveFile(halffilelen):
 	targetstructs=z[0::2]
 	counter=0
 	structures=z[0::2]
+	print("Finding edit Dist...")
 	LDistances=Levenshtein_distance(structures)
+	print("Generating Metrics...")
 	for item in z[1::2]:
 		metriclist.append(GenMetrics(item,targetstructs[counter],counter))
 		counter+=1
+		print(counter)
 		
 	f.close()
 def GenMetricFile(diversity):

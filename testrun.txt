@@ -1,0 +1,500 @@
+.((((.....))))...........
+augNNNNugaNNNNNNNauNNNaug
+augACCCugaGUACGAUauGUGaug    5
+augACGCugaGUCGGAAauGUGaug
+
+........(((....))).......
+augNNNNNNuaaNNNNNauNNNcug
+augGAGAUUuaaUACCGauACAcug    4
+augCCCCCUuaaAAUGCauAAAcug
+
+....(((...)))............
+augNNuaaNNNNNNNNNucNNNcug
+augCGuaaAUGAUAGGAucCAGcug    6   d= 3
+augCGuaaAAUCCAUGAucAAGcug
+
+.......((((....))))......
+augNNNNugaNNNNNNNauNNNaug
+augUUGAAUaCGGAUGCauGUUaug    7
+augUUGAAUaCGGAUGCauGUUaug
+
+....(((....)))...........
+augugaNNNNNNNNNNNacNNNaug
+augugaUCGCAGGCCUAacACCaug    6
+augugaUACCCGGCUUAacUUAaug
+
+.........((((...)))).....
+augNNuaaNNNNNNNNNccNNNcug
+augUCuaaAAGGGAGGCccUCAcug    4
+augUCuaaAAGGGAGGCccUCAcug
+
+..........(((((....))))).
+augNNNNNNNNuaaNNNacNNNcug
+augGAUUCUAGGaaGGUacCUUcug    4
+augGAUUCUAGGaaGGUacCUUcug
+
+.............(((.....))).
+augNNNNNNNNNNuagNccNNNaug
+augUGGAGAAGUGGUgUccCUUaug    5   d= 6
+augUUUUUUUUCUGUgUccUUGaug
+
+...........(((...))).....
+augNNNNNNugaNNNNNccNNNaug
+augACGUGAugaGGAAGccUAGaug    4
+augAAGUGAugaGGAAGccUAGaug
+
+...(((((...))))).........
+augNNNNNNNNNugaNNacNNNaug
+augCUUGCUGGGugaGAacAACaug    6
+augCUUGCUGAGugaGAacAACaug
+
+...........(((....)))....
+augNNNNNNNNNNuagNauNNNaug
+augGCUAACAAUCGagAauGAUaug    3   d= 2
+augAAAAAGAAGCGagAauGCAaug
+
+.........((((...)))).....
+augugaNNNNNNNNNNNauNNNaug
+augugaCAUUGUUUUGGauAAUaug    8   d= 2
+augugaAUGGGUCUUGGauCGUaug
+
+..........(((.....)))....
+augNNNugaNNNNNNNNauNNNaug
+augUUAugaGUAGGCGGauUACaug    4   d= 1
+augGAAugaUGCGGGAUauGCUaug
+
+.....(((....)))..........
+augNNNNuaaNNNNNNNauNNNcug
+augGGGGuaaCGGCCAUauAUGcug    5
+augAAGGuaaCUGCCAUauAUGcug
+
+....(((((....))))).......
+augNNNNNuagNNNNNNauNNNaug
+augGUGCAuagUGAUGUauGUGaug    5   d= 1
+augUUGAGuagUGCCUUauGUGaug
+
+.....(((...)))...........
+augNNuagNNNNNNNNNcaNNNaug
+augUUuagCGUGGCUGUcaUUGaug    2
+augCUuagAACCCCUUAcaCUAaug
+
+...........(((...))).....
+auguaaNNNNNNNNNNNgcNNNcug
+auguaaGAUCAGGUACUgcCCAcug    3
+auguaaAAUCCGGUAAUgcCCAcug
+
+...........(((((...))))).
+augNNNuaaNNNNNNNNauNNNaug
+augAGAuaaUUGUAGUAauGCUaug    4
+augAGAuaaUUGUAGUAauGCUaug
+
+.........(((((....)))))..
+augNNNNNNNuagNNNNacNNNaug
+augGUUCUCUuagGCCGacUUCaug    4
+augGUACACUuagGCCCacCUGaug
+
+.............(((.....))).
+augNNNNNNNNNNugaNccNNNaug
+augAGCAAAUUGUGUaGccCGGaug    7
+augAAAAAAAAAGGUaGccCAGaug
+
+...........(((...))).....
+auguaaNNNNNNNNNNNucNNNcug
+auguaaACACGAGGAGUucUGGcug    3   d= 2
+auguaaAAAAAGGGAAUucCAGcug
+
+......(((((...)))))......
+augNNNNNNNugaNNNNucNNNaug
+augCUAGAUAugaGAUAucAUUaug    3
+augCUGGAUUugaGGAAucGUUaug
+
+.........(((((...)))))...
+augNNNNNNNNNNuaaNcaNNNaug
+augGUCGAAUGCUGaaUcaGUAaug    4
+augGUCGAAUGCUGaaUcaGUAaug
+
+..........(((((.....)))))
+augNNNNNuaaNNNNNNauNNNcug
+augCUUAAuaCGGCUGCauAGGcug    5
+augCUUAAuaCGGCUGCauAGGcug
+
+........((((.....))))....
+augNNNNNNNNNuagNNucNNNaug
+augCCUCAAUGAuagACucGUAaug    5
+augCCUCACUGAuagACucGGAaug
+
+...(((...))).............
+augNNNNNNNuagNNNNacNNNaug
+augUACCAGGuagUUCUacAAAaug    5   d= 3
+augUACAAAGuagAAUCacCCAaug
+
+.........(((((.....))))).
+augNNNNNNNuaaNNNNcaNNNcug
+augUCUAGGGGaaAGGCcaUUUcug    3
+augUCUAAGGGaaAGGCcaUCUcug
+
+..........(((((....))))).
+augNNNuaaNNNNNNNNgcNNNaug
+augUGCuaaCAUCUGGGgcUAGaug    3   d= 1
+augUGCuaaGAUCGGGGgcUCGaug
+
+............((((....)))).
+augNNNNNNNuaaNNNNacNNNcug
+augGGCGCGUuaaGGGUacUCCcug    5
+augGGCGCGUuaaGGGUacUCCcug
+
+...........((((....))))..
+auguagNNNNNNNNNNNucNNNaug
+auguagUGUAAUAGGUGucUCUaug    5   d= 1
+auguagUAGAUUCCCAAucGGGaug
+
+..(((....))).............
+augNNNuaaNNNNNNNNcaNNNaug
+augCGGuaaCGUUUACAcaCUCaug    3
+augCGGuaaCGUUUACAcaCUCaug
+
+............(((....)))...
+augNNNNNNNNNNuagNccNNNaug
+augCGCUGCUCCCuagUccGAGaug    5
+augUACUGCUCCCuagUccUCGaug
+
+...........(((.....)))...
+augNNNNNNuaaNNNNNacNNNaug
+augGAGCCUuaaCGCCGacCGGaug    4
+augCAGGCUuaaCCCCGacGGCaug
+
+..............(((...)))..
+augNNNNNuagNNNNNNcaNNNaug
+augAGUAAuagCGUUUCcaGGAaug    5   d= 3
+augAUUAAuagCUUUCCcaUGGaug
+
+(((((....)))))...........
+augNNNuaaNNNNNNNNccNNNaug
+augUGCuaaCGCGUGGGccCUUaug    7
+augUGUuaaCGCGUGGGccCUUaug
+
+.((((...)))).............
+augNNNNNNNNuaaNNNacNNNaug
+aAgGGAGACUCuaaCGGacGAUaug    4
+aAgGGAGACUCuaaCGGacGAUaug
+
+..............(((...)))..
+augNNNNuaaNNNNNNNacNNNcug
+augUGCGuaaAGAUGGGacUCCcug    7
+augUGCGuaaAGAUGGGacUCCcug
+
+.(((...)))...............
+augNNuaaNNNNNNNNNucNNNcug
+augUCuaaCUGCCUGCUucAUCcug    2   d= 3
+augUCuaaGGACCCGCAucAUAcug
+
+.........((((.....))))...
+augNugaNNNNNNNNNNccNNNaug
+augAugaAGCCAGUAGCccUGGaug    3
+augAugaAGCCAGUAGCccUGGaug
+
+.......((((...)))).......
+augNNNugaNNNNNNNNacNNNaug
+augAAGuUaUCCGCGGUacCUAaug    5   d= 2
+augAUCuUaCCCCUGGCacCUAaug
+
+.............(((...)))...
+augNNNNNNuaaNNNNNcaNNNcug
+augGUUCCCuaaCGACAcaGUCcug    3
+augCCUCCCuaaCGACCcaGUCcug
+
+.......(((...))).........
+auguagNNNNNNNNNNNauNNNaug
+auguagGGCCAAUGGCUauUGGaug    4   d= 1
+auguagCUCCCUUGGAUauUGAaug
+
+.......(((((...))))).....
+augugaNNNNNNNNNNNucNNNaug
+augugaUUGAACAAAGUucAUAaug    6
+augugaUGGAACAAUGUucUUAaug
+
+(((...)))................
+auguaaNNNNNNNNNNNauNNNaug
+auguaaCGCUGCUGAUCauACAaug    4
+auguaaGCUACCGAAAAauAAAaug
+
+....(((((...)))))........
+augNNNuaaNNNNNNNNgcNNNcug
+augACGuaaGUGUGGCGgcUCUcug    5
+augACGuaaGUGGUGCGgcUCUcug
+
+.(((....)))..............
+augNNNNuagNNNNNNNccNNNaug
+auUUUUCuagCUCGAUCccCUAaug    7   d= 1
+auUUUUUuagCAUUUUCccCCCaug
+
+...........(((...))).....
+augNNNNNNuaaNNNNNccNNNcug
+augUAUGCAuaaGGUGGccUCUcug    4
+augUAAACUuaaGGCGGccUAUcug
+
+......(((((....))))).....
+augNNNNNNugaNNNNNcaNNNaug
+augACAGUGugaGCCUAcaUCGaug    3
+augACAGUGugaGCCGAcaUCGaug
+
+........((((...))))......
+augNNNNNNNNNNNuaacaNNNcug
+augGACCGUGUUUUuaacaACCcug    4   d= 2
+augCCCCCUGUUCCuaacaAUCcug
+
+.........((((.....))))...
+augNNNNuagNNNNNNNcaNNNaug
+augGAAUuagUAUUACUcaUGCaug    4
+augGAACuagUAUUACGcaUGCaug
+
+...((((....))))..........
+augNNNNNNNNugaNNNucNNNaug
+augGUUGAGCUugaCGGucUGUaug    5   d= 3
+augGUUGAUUUugaCGUucUUUaug
+
+....(((....)))...........
+augNNNNugaNNNNNNNccNNNaug
+augUGGCugaGGCUGAAccGUUaug    3
+augAAGCugaGGCUGAAccGUUaug
+
+.........(((.....))).....
+augNNNNNNNNNuaaNNauNNNaug
+augAAUCUCGGUuaaGCauCGCaug    5   d= 1
+augUCUCAAGGUuaaAUauCAAaug
+
+..............(((.....)))
+augNNNuagNNNNNNNNucNNNaug
+augUCCuagAUGUAUAUucCCUaug    6   d= 3
+augACCuagCUAAAUAUucCCUaug
+
+.....((((....))))........
+augNNNNNNNNNNNuaacaNNNcug
+augGGUUACUUGUGuaacaUCGcug    3   d= 1
+augAAUUACUUUUGuaacaGCCcug
+
+............((((.....))))
+augNNNNuagNNNNNNNauNNNaug
+augGUGAuagGAUAUCGauUAGaug    4
+augGUUAuagGAUAUCGauUGGaug
+
+..........(((...)))......
+augNNuagNNNNNNNNNucNNNaug
+augCAuagUCGGUCACAucAUCaug    2   d= 3
+augAAuagCCGGCAAAGucAAAaug
+
+...((((.....)))).........
+augNNNNNNuaaNNNNNcaNNNaug
+augGUCGGCuaaCGAUAcaGGCaug    4
+augGUCGGCuaaCGAUAcaGGCaug
+
+............((((.....))))
+augNNNuagNNNNNNNNccNNNaug
+augUGCuagGGACAUCGccGGGaug    3
+augUGCuagGGACAUCGccGAGaug
+
+.......((((.....)))).....
+augNNNNNNNNNNNuaacaNNNaug
+augACUGUUGUGUAuaacaAAGaug    4
+augACGGCUGUGAAuaacaGAGaug
+
+........(((....))).......
+augNNNNNugaNNNNNNccNNNcug
+augCACGGGgaAUUUUAccAAAcug    5   d= 1
+augCACGCGgaAUAUGCccAAAcug
+
+........(((....))).......
+augNNNNNNNNuagNNNgcNNNaug
+augCGUUUCGGuagCCCgcCCUaug    4
+augAGUUACGGuagCCCgcCCUaug
+
+.........(((((....)))))..
+augNuaaNNNNNNNNNNucNNNcug
+augGuaaUCGUGUGUUAucACGcug    5
+augGuaaUCGUGUGUUAucACGcug
+
+.((((.....))))...........
+auguagNNNNNNNNNNNucNNNaug
+auguagCUGAAUCAAGGucUGAaug    5
+auguagCUGAUACAAGGucUGAaug
+
+...(((((...))))).........
+augNNNNNNugaNNNNNccNNNcug
+augGCGAUUugaUUGUAccUACcug    3
+augGCGAUUugaUUGUAccUACcug
+
+......(((.....)))........
+augNNNNNNugaNNNNNucNNNaug
+augAUUCCAugaUCUGGucGAAaug    7
+augAAUGCAugaUUUGCucGAAaug
+
+..............(((.....)))
+augNNNNNNuaaNNNNNccNNNcug
+augAAUGUAuaaGAUGGccCGGcug    6   d= 2
+augAAUUAAuaaUAUGGccGGAcug
+
+.((((.....))))...........
+augNNNuaaNNNNNNNNacNNNaug
+augGAAuaaCUCUACUGacGACaug    3
+augGAAuaaCUCUGCAGacGACaug
+
+....(((((.....)))))......
+augNNNNNNNugaNNNNcaNNNaug
+augGUGGUACugaAUGCcaAUGaug    6
+augCUGGUACugaAUGCcaAUGaug
+
+..(((((....))))).........
+augNNNNNNNNuagNNNcaNNNaug
+augUCUGUAGAuagGCGcaCUGaug    2
+augGCUGUAUUuagCCGcaCUAaug
+
+..........(((((.....)))))
+augugaNNNNNNNNNNNgcNNNaug
+augugaUUCGCGUGGAAgcCCCaug    4
+augugaUUCGCGUGGAAgcCCCaug
+
+.......((((...)))).......
+augNNNNNNNugaNNNNcaNNNaug
+augUGAAGGGugaAACUcaGUGaug    7
+augUGAAGGGugaAACUcaGUGaug
+
+.......(((((.....)))))...
+augNNNNNNugaNNNNNacNNNaug
+augACGCUGugUAACGGacACAaug    5
+augACGCUGugUAACGGacACAaug
+
+..(((...)))..............
+augNNNNNNNNuaaNNNucNNNcug
+augGCUCCGCCuaaUACucGUGcug    2
+augGCUCCGCCuaaUACucGUGcug
+
+(((...)))................
+auguaaNNNNNNNNNNNcaNNNaug
+auguaaCGCGAGAGGGUcaGAGaug    4
+auguaaCACGUAAAGGUcaGUAaug
+
+.(((.....))).............
+augNNuaaNNNNNNNNNcaNNNcug
+augUGuaaGACCGACAAcaGUAcug    3
+augUGuaaGAGCGACAUcaGUAcug
+
+.........((((.....))))...
+augNNNNNNNNNNNuaaccNNNcug
+augAUGCUAUUUGGuaaccGGAcug    5   d= 1
+augCUCGUAUCGGCuaaccCGAcug
+
+..........(((...)))......
+augNNNuaaNNNNNNNNauNNNaug
+augUUGuaaAGUCUGUGauUCAaug    4   d= 3
+augUUUuaaGGUCCCGGauAGUaug
+
+.........(((...))).......
+augNNNNNNNNNNNugaccNNNcug
+augUAAAAGGUUAGugaccGUUcug    5   d= 1
+augCUAUACGUUCCugaccCCCcug
+
+((((...))))..............
+augNNNuaaNNNNNNNNacNNNcug
+auUUUCuaaGCCGCACGacACCcug    3
+auUUUUuaaGCCGCAUAacACCcug
+
+........(((.....)))......
+auguaaNNNNNNNNNNNcaNNNcug
+auguaaAGUGAUGAGUUcaACCcug    5
+auguaaUCUGAUGAAUUcaACCcug
+
+..........(((((...)))))..
+augNNugaNNNNNNNNNucNNNaug
+augUCugaAGUAAUGGAucAUUaug    5   d= 1
+augAGugaAUUCCGGGGucCGGaug
+
+.(((((.....))))).........
+augNNNNNugaNNNNNNgcNNNaug
+augUCUACugaGGACACgcCUGaug    2
+augUCUACugaGGACACgcCUGaug
+
+..........((((...))))....
+augNNNNNNNNNuaaNNgcNNNcug
+augCCGAAUCUCGUaAUgcGAUcug    6
+augCUGAAUCUCGUaAUgcGAUcug
+
+...........((((....))))..
+augNNNNuaaNNNNNNNccNNNcug
+augUUUAuaaUGAGUCGccGCUcug    4
+augUUUAuaaUGAGUCGccGCUcug
+
+..............(((.....)))
+augNNNNNNuaaNNNNNccNNNaug
+augUAGUUUuaaACCAUccAGGaug    4   d= 1
+augCCCCCCuaaAACAUccCCAaug
+
+(((...)))................
+augNNNNNNNuaaNNNNucNNNaug
+augGUUUCCCuaaCCUUucUAGaug    1
+augAAAGCGAuaaCUACucCCCaug
+
+........(((....))).......
+augNNNNNNNNNNNuaaucNNNcug
+augCAGGCAUUGUUuaaucCAAcug    5   d= 2
+augCCCAAAUUUCCuaaucCCCcug
+
+.((((...)))).............
+augNNNNNuaaNNNNNNgcNNNaug
+auUUGUUCuaaAAAUAGgcCCAaug    4   d= 4
+auUUGAAAuaaCAUAAGgcCGGaug
+
+..........(((((....))))).
+augNuaaNNNNNNNNNNcaNNNcug
+augAuaaCGGAGGGCUAcaGCCcug    4
+augAuaaCGGAGGGCUAcaGCCcug
+
+.....((((....))))........
+auguaaNNNNNNNNNNNgcNNNcug
+auguaaGGGUUCCUCCCgcGAUcug    1   d= 2
+auguaaCUCAAGAGAGGgcUAGcug
+
+..............(((.....)))
+auguaaNNNNNNNNNNNcaNNNcug
+auguaaUGAGGGAACGGcaGAGcug    4   d= 1
+auguaaAAAAAAAACGGcaAAAcug
+
+(((...)))................
+augNNNuagNNNNNNNNcaNNNaug
+CugGAUuagUUGCUCAUcaUUUaug    3   d= 3
+CugCAAuagACCCAAAAcaUAAaug
+
+......(((....))).........
+augNNNNNNNugaNNNNccNNNcug
+augAUUGCCUugaGGUGccUUAcug    2
+augAUUGCCAugaGGUGccUUAcug
+
+...........(((....)))....
+augNNNNNNNNNNugaNcaNNNaug
+augCGUGCGACGAugaAcaUCGaug    4   d= 1
+augCAAGCUAAGGugaAcaCCGaug
+
+..........(((.....)))....
+augNNNNNNNuagNNNNccNNNaug
+augUCCAAAGuagUGCUccUGAaug    2
+augUCCAAUGuagAGUCccUGAaug
+
+.........(((...))).......
+auguaaNNNNNNNNNNNgcNNNaug
+auguaaAAGUUGGGUCAgcGGGaug    5   d= 1
+auguaaAACUGGAACCCgcGAAaug
+
+..........(((....))).....
+augNNNNuagNNNNNNNucNNNaug
+augUACUuagAGAGUGUucUGUaug    2   d= 2
+augUCUUuagCGAGUUGucGAAaug
+
+.........(((....)))......
+augNNuaaNNNNNNNNNacNNNcug
+augUCuaaGGUGCAUACacAGUcug    5
+augUCuaaGGUGCAUACacAGUcug
+
+.......(((((.....)))))...
+augNNNNNNNuaaNNNNcaNNNcug
+augUGUUAGUuGaUUGGcaACUcug    4
+augUGUUAGUuGaUUGGcaACUcug
+
