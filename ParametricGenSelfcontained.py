@@ -32,6 +32,7 @@ import subprocess
 import time
 from multiprocessing import Pool
 import SequenceMetricGeneration
+import PostGenerationMetrics
 
 millis = int(round(time.time() * 1000))
 
@@ -196,7 +197,7 @@ def fullresource_inverse(adjoinedlist):
     p.close()  # stop the pool
     p.join()
     print("Done!")
-    print(result)
+    #print(result)
 
 
 def length_based_generation(length):
@@ -217,60 +218,123 @@ def length_based_generation(length):
 
     for item in pairrdy:
         InverseReady.append(bindpattern(item[1], item[0]))
-    print(len(InverseReady))
+
 
     # for library diversity given limited computational power. if all sequences are generated then this is not needed
     random.shuffle(InverseReady)
+    print(len(InverseReady))
 
 
 # assembles the individually generated txt files into a unified text file
 def assemble():
-    namelist = os.listdir(project_path+'AssemblySeq/')
-
+    global structs_and_seqs
+    namelist = os.listdir(project_path + 'AssemblySeq/')
+    sequenceoutputlist = []
     for name in namelist:
         with open(name) as f:
             with open('InverseSequenceOutput.txt', 'a') as f1:
                 for line in f:
                     f1.write(line)
+                    sequenceoutputlist.append(line)
     try:
         f1.close()
     except:
         pass
 
-    shutil.copyfile(project_path+'AssemblySeq/InverseSequenceOutput.txt',
-                    project_path+'InverseSequenceOutput.txt')
+    shutil.copyfile(project_path + 'AssemblySeq/InverseSequenceOutput.txt',
+                    project_path + 'InverseSequenceOutput.txt')
     os.chdir(project_path)
     shutil.rmtree('AssemblySeq')
+    # print(sequenceoutputlist)
+    structs = [x[:-1] for x in sequenceoutputlist[0::5]]
+    # print(structs)
+    seqs = [x[:-1] for x in sequenceoutputlist[3::5]]
+    # print(seqs)
+    structs_and_seqs = [x for y in zip(structs, seqs) for x in y]
+
+
+def generate_summary_data(sequence_count):  # Previously in PostGenerationMetrics.py. Returns library summary data
+    v = open("SequenceMetrics.txt", "r")
+    start_position_1 = 11
+    start_position_2 = 2
+    start_position_3 = 3
+    listofseqs = []
+    listofnormvals = []
+    triplelist = []
+    structlib = []
+    verificationlist = []
+    a = 0
+    iter = 0
+    for x in range(12 * sequence_count):
+        try:
+            temp = v.readline()
+
+            if (temp[7:10] == "Ver" or temp[7:10] == "Dis"):
+                verificationlist.append(temp[7:-1])
+            elif (temp[0] == "." or temp[0] == "("):
+                structlib.append(temp[0:-1])
+
+            elif (start_position_1 % 12 == 0):  # the sequence
+                triplelist.append(temp[0:-1])
+
+            elif (start_position_2 % 12 == 0):  # the normality
+                triplelist.append(float(temp[11:-1]))
+            elif (start_position_3 % 12 == 0):  # the normality
+                triplelist.append(float(temp[33:-1]))
+
+            start_position_1 += 1
+            start_position_2 += 1
+            start_position_3 += 1
+            iter += 1
+        except:
+            pass
+    verified_count=0
+    for item in verificationlist:
+        if(item[0]=='V'):
+            verified_count+=1
+    print('Percent Verified: ' +str(verified_count/sequence_count*100))
+
+    return verificationlist, structlib, triplelist[0::3], triplelist[1::3], triplelist[2::3]
+
 
 # specifies the path of where you want to run this script. Note that if you are running
 # the R script or Metrics, those files have to be in the same directory
 project_path = '/Users/Peter/PycharmProjects/RNALibrary/'
 
-if __name__ == '__main__':
-    # all of this just clears the files for a re-run
 
-    sequence_count=2
-    sequence_length=120
+def generate(sequence_count, sequence_length):  # the runs the generation of the sequences
+    # all of this just clears the files for a re-run
 
     os.chdir(project_path)
     open('InverseSequenceOutput.txt', 'w').close()
     os.chdir(project_path)
 
     try:
-        os.mkdir(project_path+'AssemblySeq/')
+        os.mkdir(project_path + 'AssemblySeq/')
     except:
         shutil.rmtree('AssemblySeq')
         os.mkdir(project_path + 'AssemblySeq/')
 
-    os.chdir(project_path+'AssemblySeq/')
+    os.chdir(project_path + 'AssemblySeq/')
 
     # generation and inverse of the sequences
     length_based_generation(sequence_length)
     fullresource_inverse(InverseReady[0:sequence_count])
     assemble()
 
-    subprocess.call ("Rscript gkm_svm_generator.R", shell=True)
-    gkm_svm_scores=gen_diversity()
+    subprocess.call("Rscript gkm_svm_generator.R", shell=True)
+    gkm_svm_scores = gen_diversity()
 
-    SequenceMetricGeneration.RetrieveFile(sequence_count)
+    SequenceMetricGeneration.RetrieveFile(sequence_count, structs_and_seqs)
     SequenceMetricGeneration.GenMetricFile(gkm_svm_scores)
+
+
+structs_and_seqs = []
+if __name__ == '__main__':
+    sequence_count = 30
+    sequence_length = 45
+    generate(sequence_count, sequence_length)
+
+    verificationlist, structlib, seqs, edit, diversity = generate_summary_data(sequence_count)
+
+

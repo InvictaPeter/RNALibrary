@@ -100,23 +100,10 @@ def GenMetrics(inseq,instruct,counter):
 	metrics.append("Average Structure Edit Distance: " + str(EditDistanceList[counter]))
 
 	return metrics
-def RetrieveFile(number_of_sequences):
+def RetrieveFile(number_of_sequences,structure_and_sequence_list):
 	global EditDistanceList,seqnumber
 	seqnumber=number_of_sequences
-	InverseSequenceOutputFile = open("InverseSequenceOutput.txt", "r")
-	counter=0
-	for x in range(number_of_sequences*2):
-		temp=InverseSequenceOutputFile.readline()
-		if(temp[0]=="."):
-			structure=temp.split()
-			structure_and_sequence_list.append(structure[0])
-
-			InverseSequenceOutputFile.readline()
-			InverseSequenceOutputFile.readline()
-			targetseq=InverseSequenceOutputFile.readline().split() #final line of the rnainverse command is usually best sequence
-			structure_and_sequence_list.append(targetseq[0])
-		counter+=1
-	print(structure_and_sequence_list)
+	#print(len(structure_and_sequence_list))
 	targetstructs= structure_and_sequence_list[0::2]
 	counter=0
 	structures= structure_and_sequence_list[0::2]
@@ -126,21 +113,22 @@ def RetrieveFile(number_of_sequences):
 	for item in structure_and_sequence_list[1::2]:
 		metriclist.append(GenMetrics(item,targetstructs[counter],counter))
 		counter+=1
-		print(counter)
+	#print(counter)
 
-	InverseSequenceOutputFile.close()
+	#InverseSequenceOutputFile.close()
 def GenMetricFile(gkm_svm_output):
 	f=open("SequenceMetrics.txt", "w")
 	iterable=0
 	for item in metriclist:
 		for item2 in item:
-			print(item2)
+			#print(item2)
 			f.write(item2)
 			f.write('\n')
 		f.write("normality: "+str(gkm_svm_output[iterable]))
 		iterable+=1
 		f.write('\n')
 		f.write('\n')
+	f.close()
 
 
 

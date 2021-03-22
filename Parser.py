@@ -7,7 +7,7 @@ def file_len(fname):
 z=[]
 b=[]
 def pick_top_n_diversity(n):
-	v = open("Metrics.txt", "r")
+	v = open("SequenceMetrics.txt", "r")
 	c=0
 	o=0
 	it=11
@@ -38,7 +38,7 @@ for x in pick_top_n_diversity(20):
 # v.close()
 # def topseq(number_of_sequences):
 
-# print(str(float(c*100/o))+"% verification success yielding "+str(c)+" qualified sequences")
+#print(str(float(c*100/o))+"% verification success yielding "+str(c)+" qualified sequences")
 
 
 
