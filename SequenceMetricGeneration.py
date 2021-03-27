@@ -92,7 +92,7 @@ def GenMetrics(inseq,instruct,counter):
 	metrics.append(inseq)
 	metrics.append("5' UTR length: "+ str(len(inseq)))
 	metrics.append("5' UTR folding free energy: "+str(get_rna_structure_energy(inseq)))
-	metrics.append("Lowest MFE of sequence of length 50: " + str(get_moststable(inseq)[1]))
+	metrics.append("Lowest MFE of sequence: " + str(get_moststable(inseq)[1]))
 	metrics.append("Amount of upstream NUG occurances: "+str(countNUG(inseq)))
 	metrics.append("Amount of upstream stop codon occurances: "+str(findStop(inseq)))
 	metrics.append("Percent GC content: "+str(GCcontent(inseq)))
