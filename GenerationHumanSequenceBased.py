@@ -145,10 +145,6 @@ def insert(inputstring, index, insertedstr):  # tool to insert a string into ano
     return inputstring[:index] + insertedstr + inputstring[index + 1:]
 
 
-def generate_pin(stemlen, looplen):  # generate a hairpin structure in dot-bracket notation
-    return ("(" * stemlen + "." * looplen + ")" * stemlen)
-
-
 def generate_nucleotide_sequence(ulen,
                                  distusms):  # writes a sequence of uORF length ulen and NCR length distusms intended for the nucleotide part of an RNAInverse call #TODO: Add negative context permutations
     retlist = []
@@ -162,20 +158,6 @@ def generate_nucleotide_sequence(ulen,
                     retlist.append((pt1l3 + ulen * 'N' + pt2l3 + distusms * 'N' + pt3l8))
     return retlist
 
-
-def generate_structure_permutations(nucleotide_sequence):  # generate all structural permutations within the
-    # possibility of the given parameters stem length and loop length. Throws away sequences if impossible
-    permutations = []
-    blankpattern = len(nucleotide_sequence) * "."
-
-    for slen in stem_length:
-        for llen in loop_length:
-            for dus in dist_uorf_strx:
-                permutation = insert_with_delete(blankpattern, generate_pin(slen, llen), dus)
-                if (len(permutation) <= len(
-                        blankpattern)):  # throws out structures which are larger than possible within the configuration
-                    permutations.append(permutation)
-    return permutations
 
 
 def takeinversefromstring(instring):  # simplified functionality for the inverse call from the input string
@@ -219,7 +201,7 @@ def length_based_generation(length, permutationlist):
 
     print(len(orderednts), "nucleotide permutations")
 
-    # Old methodology using shuffle. 1 nucleotide sequence to many structures
+    # Old methodology using shuffle. 1 nucleotide sequence to many structures. Suggested for high power computing. Massively expands library
     # for nucleotidesequence in orderednts:
     #     for structuralsequence in permutationlist[0:len(orderednts)]:
     #
@@ -242,7 +224,7 @@ def length_based_generation(length, permutationlist):
 
     # for library diversity given limited computational power. if all sequences are generated then this is not needed
 
-    # random.shuffle(InverseReady)
+    #random.shuffle(InverseReady)
 
     print(len(InverseReady), "inverse ready pairs")
 
@@ -371,7 +353,7 @@ for sequencevariantpair in df:
         nonvariants.append(sequencevariantpair[0].replace("T", "U"))
 
 
-def generate_pin2(stemlen, looplen, insertnumber):  # generate a hairpin structure in dot-bracket notation
+def generate_pin(stemlen, looplen, insertnumber):  # generate a hairpin structure in dot-bracket notation
 
     base = ("(" * stemlen + "." * looplen + ")" * stemlen)
 
@@ -403,21 +385,87 @@ def get_moststable(sequence,seqnumber):  # RNALfold Stable Structure Finder
     return stableseq, stableenergy
 
 
-def generate_structure_permutations2(nucleotide_sequence):  # generate all structural permutations within the
+def generate_structure_permutations(nucleotide_sequence,sequence_count):  # generate all structural permutations within the
     # possibility of the given parameters stem length and loop length. Throws away sequences if impossible
     permutations = []
     advancedpermutations = []
     blankpattern = len(nucleotide_sequence) * "."
-    stem_length = range(4, 13)
-    loop_length = range(4, 13)
-    insertrange = range(0, 5)
-    minlen = 3
+    stem_length = list(range(4, 13))
+    loop_length = list(range(4, 13))
+    insertrange = list(range(0, 5))
+
+    random.shuffle(stem_length)
+    random.shuffle(loop_length)
+    random.shuffle(insertrange)
+
+
+    decider=random.randint(0,1)
+
+    # #
+    # # HIGHER EFFICIENCY, LOWER COVERAGE, MORE STOCHASTIC. LOW POWER USE CASE SUGGESTED
+    # #
+    #
+    # for slen in stem_length:
+    #     for llen in loop_length:
+    #         for dus in dist_uorf_strx:
+    #             for insertnum in insertrange:
+    #                 permutation = insert_with_delete(blankpattern, generate_pin(slen, llen, insertnum), dus)
+    #                 if (len(permutation) <= len(
+    #                         blankpattern)):  # throws out structures which are larger than possible within the configuration
+    #                     permutations.append(permutation)
+    #                     # print(permutation)
+    #
+    #
+    # if (decider==0):
+    #     for item in permutations:
+    #         for item2 in range(item.find('(')):
+    #             for givenstemlength in stem_length:
+    #                 for givenlooplength in loop_length:
+    #                     for insertnum in insertrange:
+    #                         minlen = givenlooplength + givenstemlength * 2
+    #                         if item.find('(') - item2 >= minlen + insertnum:
+    #                             entry = insert_with_delete(item, generate_pin(givenstemlength, givenlooplength, insertnum),
+    #                                                        item2)
+    #                             # print(entry)
+    #                             advancedpermutations.append(entry)
+    #                             if(len(advancedpermutations)==sequence_count):
+    #                                 print(len(advancedpermutations),
+    #                                       "structural permutations of a given sequence of length",
+    #                                       len(nucleotide_sequence))
+    #                                 return advancedpermutations
+    #
+    # # postprimary structs
+    # elif (decider==1):
+    #     for item in permutations:
+    #         for item2 in range(len(item)):
+    #             for givenstemlength in stem_length:
+    #                 for givenlooplength in loop_length:
+    #                     for insertnum in insertrange:
+    #                         minlen = givenlooplength + givenstemlength * 2
+    #                         availspace = len(item) - item.rfind(')') - 1 - item2
+    #                         requiredspace = minlen + insertnum
+    #                         if requiredspace <= availspace:
+    #                             entry = insert_with_delete(item, generate_pin(givenstemlength, givenlooplength, insertnum),
+    #                                                        item.rfind(')') + item2 + 1)
+    #                             # print(entry)
+    #                             advancedpermutations.append(entry)
+    #                             if (len(advancedpermutations) == sequence_count):
+    #                                 print(len(advancedpermutations),
+    #                                       "structural permutations of a given sequence of length",
+    #                                       len(nucleotide_sequence))
+    #                                 return advancedpermutations
+
+
+    #
+    # IF HIGH RESOURCE AVAILABILITY, RUN BELOW. GENERATES ALL STRUCTURAL PERMUTATIONS
+    #
+
 
     for slen in stem_length:
         for llen in loop_length:
             for dus in dist_uorf_strx:
                 for insertnum in insertrange:
-                    permutation = insert_with_delete(blankpattern, generate_pin2(slen, llen, insertnum), dus)
+                    permutation = insert_with_delete(blankpattern, generate_pin(slen, llen, insertnum), dus)
                     if (len(permutation) <= len(
                             blankpattern)):  # throws out structures which are larger than possible within the configuration
                         permutations.append(permutation)
@@ -432,7 +480,7 @@ def generate_structure_permutations2(nucleotide_sequence):  # generate all struc
                     for insertnum in insertrange:
                         minlen = givenlooplength + givenstemlength * 2
                         if item.find('(') - item2 >= minlen + insertnum:
-                            entry = insert_with_delete(item, generate_pin2(givenstemlength, givenlooplength, insertnum),
+                            entry = insert_with_delete(item, generate_pin(givenstemlength, givenlooplength, insertnum),
                                                        item2)
                             # print(entry)
                             advancedpermutations.append(entry)
@@ -447,42 +495,33 @@ def generate_structure_permutations2(nucleotide_sequence):  # generate all struc
                         availspace = len(item) - item.rfind(')') - 1 - item2
                         requiredspace = minlen + insertnum
                         if requiredspace <= availspace:
-                            entry = insert_with_delete(item, generate_pin2(givenstemlength, givenlooplength, insertnum),
+                            entry = insert_with_delete(item, generate_pin(givenstemlength, givenlooplength, insertnum),
                                                        item.rfind(')') + item2 + 1)
                             # print(entry)
                             advancedpermutations.append(entry)
-
-    # pre and postprimary structs
-    # for item in advancedpermutations:
-    #     for item2 in range(len(item)):
-    #         for givenstemlength in stem_length:
-    #             for givenlooplength in loop_length:
-    #                 minlen = givenlooplength + givenstemlength * 2
-    #                 availspace = len(item) - item.rfind(')') - 1 - item2
-    #                 requiredspace = minlen
-    #                 if requiredspace <= availspace:
-    #                     entry = insert_with_delete(item, generate_pin(givenstemlength, givenlooplength),
-    #                                                item.rfind(')') + item2 + 1)
-    #                     #print(entry)
-    #                     advancedpermutations.append(entry)
-
-    print(len(advancedpermutations), "structural permutations of a given sequence of length", len(nucleotide_sequence))
+    print(len(advancedpermutations),
+                                          "structural permutations of a given sequence of length",
+                                          len(nucleotide_sequence))
     return advancedpermutations
+
+
 
 
 if __name__ == '__main__':
 
+    #generate the synthetic data
     permutationlist = []
     start = time.time()
-    sequence_count = 50
-    sequence_length = 45
-    permutationlist = (generate_structure_permutations2("n" * sequence_length))
-
-    random.shuffle(permutationlist)
-    generate(sequence_count, sequence_length, permutationlist)
+    sequence_count = 60
+    sequence_length = 30
+    permutationlist = generate_structure_permutations("n" * sequence_length,sequence_count)
 
     end = time.time()
-    print(round(end - start, 3), "second runtime")
+    print(round(end - start, 3), "structural generation second runtime")
+
+    generate(sequence_count, sequence_length, permutationlist)
+
+
 
 
     #Fold and get free energy of the human sequences
@@ -491,7 +530,7 @@ if __name__ == '__main__':
     for sequence in nonvariants[0:50]:
         humanMFElist.append(list(get_moststable(sequence,20))[1])
         foldedhumanseqs.append([sequence.lower(),fold(sequence)])
-        #print(sequence.lower(), get_moststable(sequence, 50)[1], fold(sequence))
+
     humanMFEsum=0
     for MFE in humanMFElist:
         humanMFEsum+=MFE
@@ -501,14 +540,15 @@ if __name__ == '__main__':
     # Fold and get free energy of the synthetic sequences
     syntheticNTlist = []
     syntheticMFElist = []
+
+
     for syntheticNucleotideSequence in (structs_and_seqs[1::2]):
         syntheticNTlist.append(syntheticNucleotideSequence)
-
     for sequence in syntheticNTlist:
         syntheticMFElist.append(list(get_moststable(sequence,20))[1])
-        #print(sequence.lower(), get_moststable(sequence, 50)[1])
-    syntheticMFEsum=0
 
+
+    syntheticMFEsum=0
     for MFE in syntheticMFElist:
         syntheticMFEsum+=MFE
 
@@ -517,4 +557,4 @@ if __name__ == '__main__':
     print("Average Synthetic MFE",syntheticMFEsum/len(syntheticMFElist))
     print("Sorted Synthetic MFE", sorted(syntheticMFElist))
 
-    # verificationlist, structlib, seqs, edit, diversity = generate_summary_data(sequence_count)
+    verificationlist, structlib, seqs, edit, diversity = generate_summary_data(sequence_count)
