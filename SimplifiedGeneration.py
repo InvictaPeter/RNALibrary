@@ -32,6 +32,10 @@ import subprocess
 import time
 from multiprocessing import Pool
 import SequenceMetricGeneration
+import pandas as pd
+import re
+import itertools
+import math
 import PostGenerationMetrics
 
 millis = int(round(time.time() * 1000))
@@ -114,7 +118,7 @@ start_context_p4p5 = ["cc", "au", "uc", "ca", "ac", "gc"]
 
 # distance between uORF start and structure - 8nt is mostly upstream, 14nt is ~100% upstream, and 32 nt is ~50/50 (Kozak PNAS 1990)
 #  (above with uAUG context uuuAUGg and a stem loop of sequence GATCCGGGTTCTCCCGGATC (-14.2 kcal/mol) 
-dist_uorf_strx = list(range(0, 35))
+dist_uorf_strx = []
 
 # distance between uORF stop and start codon
 # - spacing between uORF stop and main ORF start (low -> high reinitiation: 11, 45, 79 nt between stop and downstream AUG; Kozak 1987 MCB)
@@ -123,11 +127,12 @@ dist_uorf_stop_main_start = [10, 20, 30, 40, 50]
 # uORF length (not including start or stop codons) 
 uorf_length_min = [0, 3, 12, 24, 39, 57, 99]
 
-stem_length = [3, 4, 5]
 
-loop_length = [3, 4, 5]
 InverseReady = []
-
+startcodonstartlocations=[]
+insertrange=[]
+stem_length = []
+loop_length = []
 
 def bindpattern(inpat, inseq):  # tool to bind the dot-bracket notation to its inherent pattern for RNAinverse
     return inpat + "\n" + inseq
@@ -141,36 +146,15 @@ def insert(inputstring, index, insertedstr):  # tool to insert a string into ano
     return inputstring[:index] + insertedstr + inputstring[index + 1:]
 
 
-def generate_pin(stemlen, looplen):  # generate a hairpin structure in dot-bracket notation
-    return ("(" * stemlen + "." * looplen + ")" * stemlen)
+def generate_nucleotide_sequence(length,locs):  # writes a sequence of uORF length ulen and NCR length distusms intended for the nucleotide part of an RNAInverse call #TODO: Add negative context permutations
 
-
-def generate_nucleotide_sequence(ulen,
-                                 distusms):  # writes a sequence of uORF length ulen and NCR length distusms intended for the nucleotide part of an RNAInverse call #TODO: Add negative context permutations
     retlist = []
-    for elem in start_codons:
-        for elem2 in start_codons:
-            for elem3 in stop_codons:
-                for contexts in start_context_p4p5:
-                    pt1l3 = elem
-                    pt2l3 = elem3
-                    pt3l8 = contexts + 3 * "N" + elem2
-                    retlist.append((pt1l3 + ulen * 'N' + pt2l3 + distusms * 'N' + pt3l8))
+    start_codons=['aug']
+    for startcodon in start_codons:
+        for location in locs:
+            retlist.append(location*'N'+(startcodon + ((length-3-location) * 'N' )))
     return retlist
 
-
-def generate_structure_permutations(nucleotide_sequence):  # generate all structural permutations within the
-    # possibility of the given parameters stem length and loop length. Throws away sequences if impossible
-    permutations = []
-    blankpattern = len(nucleotide_sequence) * "."
-    for slen in stem_length:
-        for llen in loop_length:
-            for dus in dist_uorf_strx:
-                permutation = insert_with_delete(blankpattern, generate_pin(slen, llen), dus)
-                if (len(permutation) <= len(
-                        blankpattern)):  # throws out structures which are larger than possible within the configuration
-                    permutations.append(permutation)
-    return permutations
 
 
 def takeinversefromstring(instring):  # simplified functionality for the inverse call from the input string
@@ -197,32 +181,38 @@ def fullresource_inverse(adjoinedlist):
     p.close()  # stop the pool
     p.join()
     print("Done!")
-    #print(result)
+    # print(result)
 
 
-def length_based_generation(length):
+def length_based_generation(length, permutationlist):
     generatedseqs = []
     pairrdy = []
 
     # generate all the permutations of the nucleotide seq. Note: Constant offset vals due to feature (codons,
     # contexts) lengths.
-    for i in range(0, length - 14 + 1):
-        generatedseqs.append(generate_nucleotide_sequence(i, length - 14 - i))
 
+
+    generatedseqs.append(generate_nucleotide_sequence(length,startcodonstartlocations))
+    print(generatedseqs)
     orderednts = [item for sublist in generatedseqs for item in sublist]
+    print(orderednts)
+    print(len(permutationlist), "structural permutations")
+    print(len(orderednts), "nucleotide permutations")
 
+    start = time.time()
+    # 1 nucleotide sequence to 1 structure
     for nucleotidesequence in orderednts:
-        for structuralsequence in generate_structure_permutations(nucleotidesequence):
-            pair = [nucleotidesequence, structuralsequence]
+        for permutation in permutationlist:
+            pair = [nucleotidesequence, permutation]
             pairrdy.append(pair)
 
     for item in pairrdy:
         InverseReady.append(bindpattern(item[1], item[0]))
 
+    end = time.time()
 
-    # for library diversity given limited computational power. if all sequences are generated then this is not needed
-    random.shuffle(InverseReady)
-    print(len(InverseReady))
+
+    print(len(InverseReady), "inverse ready pairs")
 
 
 # assembles the individually generated txt files into a unified text file
@@ -251,6 +241,15 @@ def assemble():
     seqs = [x[:-1] for x in sequenceoutputlist[3::5]]
     # print(seqs)
     structs_and_seqs = [x for y in zip(structs, seqs) for x in y]
+
+
+def fold(sequence):  # From Original Program
+    lines = stdout_from_command("echo %s | RNAfold --noPS --MEA -p" % sequence)
+
+    # first line is just the seq - skip
+    lines.__next__()
+    secstruct = lines.__next__().decode("utf-8").split()[0]
+    return secstruct
 
 
 def generate_summary_data(sequence_count):  # Previously in PostGenerationMetrics.py. Returns library summary data
@@ -288,11 +287,11 @@ def generate_summary_data(sequence_count):  # Previously in PostGenerationMetric
             iter += 1
         except:
             pass
-    verified_count=0
+    verified_count = 0
     for item in verificationlist:
-        if(item[0]=='V'):
-            verified_count+=1
-    print('Percent Verified: ' +str(verified_count/sequence_count*100))
+        if (item[0] == 'V'):
+            verified_count += 1
+    print('Percent Verified: ' + str(verified_count / sequence_count * 100))
 
     return verificationlist, structlib, triplelist[0::3], triplelist[1::3], triplelist[2::3]
 
@@ -302,7 +301,7 @@ def generate_summary_data(sequence_count):  # Previously in PostGenerationMetric
 project_path = '/Users/Peter/PycharmProjects/RNALibrary/'
 
 
-def generate(sequence_count, sequence_length):  # the runs the generation of the sequences
+def generate(sequence_length, permutationlist):  # the runs the generation of the sequences
     # all of this just clears the files for a re-run
 
     os.chdir(project_path)
@@ -318,23 +317,114 @@ def generate(sequence_count, sequence_length):  # the runs the generation of the
     os.chdir(project_path + 'AssemblySeq/')
 
     # generation and inverse of the sequences
-    length_based_generation(sequence_length)
-    fullresource_inverse(InverseReady[0:sequence_count])
+    length_based_generation(sequence_length, permutationlist)
+    # print(InverseReady[0:sequence_count])
+    fullresource_inverse(InverseReady)
     assemble()
 
     subprocess.call("Rscript gkm_svm_generator.R", shell=True)
     gkm_svm_scores = gen_diversity()
 
-    SequenceMetricGeneration.RetrieveFile(sequence_count, structs_and_seqs)
+    SequenceMetricGeneration.RetrieveFile(len(InverseReady), structs_and_seqs)
     SequenceMetricGeneration.GenMetricFile(gkm_svm_scores)
 
 
 structs_and_seqs = []
+
+data = pd.read_csv(r'/Users/Peter/Downloads/snv_phenotype_log_diff.csv')
+df = pd.DataFrame(data, columns=['utr', 'info4']).to_numpy()
+nonvariants = []
+for sequencevariantpair in df:
+    if sequencevariantpair[1] == "normal":
+        nonvariants.append(sequencevariantpair[0].replace("T", "U"))
+
+
+def generate_pin(stemlen, looplen, insertnumber):  # generate a hairpin structure in dot-bracket notation
+
+    base = ("(" * stemlen + "." * looplen + ")" * stemlen)
+
+    for item in range(insertnumber):
+        decider = random.randint(0, 1)
+        if (decider == 1):
+            randindex = random.randint(1, stemlen)
+        else:
+            randindex = random.randint(stemlen + looplen + 1, stemlen * 2 + looplen - 1)
+        base = base[:randindex] + "." + base[randindex:]
+    return base
+
+
+def get_moststable(sequence,seqnumber):  # RNALfold Stable Structure Finder
+    a = []
+    if len(sequence) < 1:
+        return (0, 0)
+    lines = stdout_from_command("echo %s | RNALfold --span=50" % sequence)
+    for i in range(
+            seqnumber * 2):  # Get all the outputs. Probably not over 200. If it is, make this number bigger rinse repeat
+        # print(a)
+        try:
+            a.append(lines.__next__())
+        # print(a)
+        except:
+            pass
+    stableseq = (a[-2])[0:-1]
+    stableenergy = (float((a[-1])[2:-2]))
+    return stableseq, stableenergy
+
+
+def generate_structure_permutations(nucleotide_sequence):  # generate all structural permutations within the
+    # possibility of the given parameters stem length and loop length. Throws away sequences if impossible
+    permutations = []
+    advancedpermutations = []
+    blankpattern = len(nucleotide_sequence) * "."
+
+
+
+
+    random.shuffle(stem_length)
+    random.shuffle(loop_length)
+    random.shuffle(insertrange)
+
+
+
+
+    for slen in stem_length:
+        for llen in loop_length:
+            for dus in dist_uorf_strx:
+                for insertnum in insertrange:
+                    permutation = insert_with_delete(blankpattern, generate_pin(slen, llen, insertnum), dus)
+                    if (len(permutation) <= len(
+                            blankpattern)):  # throws out structures which are larger than possible within the configuration
+                        permutations.append(permutation)
+                        # print(permutation)
+
+    return permutations
+
+
+
+
+
 if __name__ == '__main__':
-    sequence_count = 30
-    sequence_length = 45
-    generate(sequence_count, sequence_length)
+    #global startcodonstartlocations
 
-    verificationlist, structlib, seqs, edit, diversity = generate_summary_data(sequence_count)
+    #Depends on 7 variables: sequence_length, structuralcount, locs (product of these the first and the length of the second = seq #),
+    #dist_uorf_strx, insertrange, loop_length, and stem_length (change the features of the structure)
 
+    sequence_length = 30
+
+    structuralcount = 2
+    startcodonstartlocations=[2,9,17,24,27]
+
+    dist_uorf_strx = [8] #where the first start codon is
+    insertrange = [0 ,2 ,3] #how many dots within the hairpin other than the loop
+    stem_length = [3, 4, 5]
+    loop_length = [3, 4, 5]
+
+
+    permutationlist = []
+    start = time.time()
+
+
+    permutationlist = random.sample(generate_structure_permutations("n" * sequence_length),structuralcount)
+
+    generate(sequence_length, permutationlist)
 

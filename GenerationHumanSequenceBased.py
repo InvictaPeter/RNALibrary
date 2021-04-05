@@ -471,6 +471,7 @@ def generate_structure_permutations(nucleotide_sequence,sequence_count):  # gene
                         permutations.append(permutation)
                         # print(permutation)
 
+
     # preprimary structs
     for item in permutations:
         advancedpermutations.append(item)
@@ -512,8 +513,9 @@ if __name__ == '__main__':
     #generate the synthetic data
     permutationlist = []
     start = time.time()
-    sequence_count = 60
+    sequence_count = 6
     sequence_length = 30
+
     permutationlist = generate_structure_permutations("n" * sequence_length,sequence_count)
 
     end = time.time()
@@ -527,7 +529,7 @@ if __name__ == '__main__':
     #Fold and get free energy of the human sequences
     foldedhumanseqs=[]
     humanMFElist=[]
-    for sequence in nonvariants[0:50]:
+    for sequence in nonvariants[0:120]:
         humanMFElist.append(list(get_moststable(sequence,20))[1])
         foldedhumanseqs.append([sequence.lower(),fold(sequence)])
 
