@@ -1,0 +1,120 @@
+........(((((.....))))).......
+CCaugUAAAUGCAGGUCGUGCGUAUCCUAC
+5' UTR length: 30
+5' UTR folding free energy: -4.20
+Lowest MFE of sequence: -4.2
+Amount of upstream NUG occurances: 2
+Amount of upstream stop codon occurances: 1
+Percent GC content: 46.666666666666664
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.001947166
+
+........(((....)))............
+AGUAAGAGAaugGGGGUUGAAAUUGAGAAG
+5' UTR length: 30
+5' UTR folding free energy: 0.00
+Lowest MFE of sequence: 0.0
+Amount of upstream NUG occurances: 2
+Amount of upstream stop codon occurances: 3
+Percent GC content: 36.666666666666664
+Match: Discard
+Average Structure Edit Distance: 4.0
+normality: 0.01908301
+
+........(((....)))............
+UUUUUUUUUGGUAAACCaugGUUCUCAUUC
+5' UTR length: 30
+5' UTR folding free energy: -1.20
+Lowest MFE of sequence: -1.2
+Amount of upstream NUG occurances: 1
+Amount of upstream stop codon occurances: 1
+Percent GC content: 26.666666666666668
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.02068415
+
+........(((....)))............
+UAUCCAAGCGCUCCGGUGAUCUUCUGCaug
+5' UTR length: 30
+5' UTR folding free energy: -2.50
+Lowest MFE of sequence: -2.5
+Amount of upstream NUG occurances: 2
+Amount of upstream stop codon occurances: 1
+Percent GC content: 50.0
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.01821031
+
+........(((....)))............
+GAUCCGUCGCCUUAAGGCUUCAACaugCUG
+5' UTR length: 30
+5' UTR folding free energy: -3.50
+Lowest MFE of sequence: -3.5
+Amount of upstream NUG occurances: 1
+Amount of upstream stop codon occurances: 1
+Percent GC content: 50.0
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.01828765
+
+........(((((.....))))).......
+AUAAGAUGGUUCAAAUGaugGGCAAGCGCG
+5' UTR length: 30
+5' UTR folding free energy: -2.60
+Lowest MFE of sequence: -2.6
+Amount of upstream NUG occurances: 2
+Amount of upstream stop codon occurances: 1
+Percent GC content: 43.333333333333336
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.00212413
+
+........(((....)))............
+GAaugAAAACCCGCCGGUACUUUGACAUCC
+5' UTR length: 30
+5' UTR folding free energy: -1.50
+Lowest MFE of sequence: -1.5
+Amount of upstream NUG occurances: 1
+Amount of upstream stop codon occurances: 1
+Percent GC content: 46.666666666666664
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.0006713379
+
+........(((((.....))))).......
+AAUAUGGGCaugUCAGGAACAUGGGGAAUC
+5' UTR length: 30
+5' UTR folding free energy: -3.40
+Lowest MFE of sequence: -3.4
+Amount of upstream NUG occurances: 2
+Amount of upstream stop codon occurances: 0
+Percent GC content: 43.333333333333336
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.001283207
+
+........(((((.....))))).......
+GGCUCGCCCCAUAUUGAUUAUGGAaugUUA
+5' UTR length: 30
+5' UTR folding free energy: -4.80
+Lowest MFE of sequence: -4.8
+Amount of upstream NUG occurances: 2
+Amount of upstream stop codon occurances: 1
+Percent GC content: 40.0
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.00161782
+
+........(((((.....))))).......
+UGCAACUAGUCCUUUUAUGGGAUCCUUaug
+5' UTR length: 30
+5' UTR folding free energy: -4.60
+Lowest MFE of sequence: -4.6
+Amount of upstream NUG occurances: 1
+Amount of upstream stop codon occurances: 1
+Percent GC content: 36.666666666666664
+Match: Verified
+Average Structure Edit Distance: 4.0
+normality: 0.001353046
+
