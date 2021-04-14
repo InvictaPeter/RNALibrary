@@ -116,7 +116,7 @@ def RetrieveFile(number_of_sequences,structure_and_sequence_list):
 	#print(counter)
 
 	#InverseSequenceOutputFile.close()
-def GenMetricFile(gkm_svm_output):
+def GenMetricFile():
 	f=open("SequenceMetrics.txt", "w")
 	iterable=0
 	for item in metriclist:
@@ -124,7 +124,7 @@ def GenMetricFile(gkm_svm_output):
 			#print(item2)
 			f.write(item2)
 			f.write('\n')
-		f.write("normality: "+str(gkm_svm_output[iterable]))
+		f.write("normality: ")
 		iterable+=1
 		f.write('\n')
 		f.write('\n')

@@ -71,22 +71,6 @@ def get_moststable(sequence):  # RNALfold Stable Structure Finder
     return stableseq, stableenergy
 
 
-def gen_diversity():
-    with open('gkm_svm_output.txt') as j:
-        line_count = 0
-        for line in j:
-            line_count += 1
-    j.close()
-    diversityscores = []
-    f = open("gkm_svm_output.txt", "r")
-    for z in range(0, line_count):
-        temp = f.readline()
-        if temp != "" and temp != "\n":
-            if temp[1] == "1":
-                sub = temp.split()
-                diversityscores.append(sub[1])
-    return diversityscores
-
 
 # legend - numbering around the start codon
 
@@ -322,11 +306,11 @@ def generate(sequence_length, permutationlist):  # the runs the generation of th
     fullresource_inverse(InverseReady)
     assemble()
 
-    subprocess.call("Rscript gkm_svm_generator.R", shell=True)
-    gkm_svm_scores = gen_diversity()
+    #subprocess.call("Rscript gkm_svm_generator.R", shell=True)
+
 
     SequenceMetricGeneration.RetrieveFile(len(InverseReady), structs_and_seqs)
-    SequenceMetricGeneration.GenMetricFile(gkm_svm_scores)
+    SequenceMetricGeneration.GenMetricFile()
 
 
 structs_and_seqs = []
@@ -399,19 +383,54 @@ def generate_structure_permutations(nucleotide_sequence):  # generate all struct
 
     return permutations
 
+def findStart(inseq):
+
+    if (inseq.find('aug')!=-1):
+        return inseq.find('aug')
+    elif (inseq.find('cug')!=-1):
+        return inseq.find('cug')
+    elif (inseq.find('gug')!=-1):
+        return inseq.find('gug')
+    elif (inseq.find('uug')!=-1):
+        return inseq.find('uug')
+    else:
+        return -1
 
 
+def makeCSV():
+    v = open("SequenceMetrics.txt", "r")
+
+
+
+    listofseqs = []
+    listofstructs = []
+    listofstartindices=[]
+    listofids=[]
+
+    for x in range(file_len("SequenceMetrics.txt")):
+        temp = v.readline()
+        if(x % 12==0):
+            listofstructs.append(temp[0:-1])
+        if ((x-1) % 12 == 0):
+            listofseqs.append(temp[0:-1])
+            listofstartindices.append(findStart(temp[0:-1]))
+    for sequence in range(len(listofseqs)):
+        listofids.append("elem"+'{:0>4}'.format(sequence))
+    v.close()
+    d = {'id': listofids, 'seq': listofseqs, 'db': listofstructs, 'AUGloc': listofstartindices}
+    df = pd.DataFrame(data=d)
+    df.to_csv(os.path.dirname(os.path.abspath(__file__))+r'/generationOutput.csv',index=False)
 
 
 if __name__ == '__main__':
     #global startcodonstartlocations
 
-    #Depends on 7 variables: sequence_length, structuralcount, locs (product of these the first and the length of the second = seq #),
+    #Depends on 7 variables: sequence_length, structuralcount, startcodonstartlocations (product of structuralcount and length of startcodonstartlocations = seq #),
     #dist_uorf_strx, insertrange, loop_length, and stem_length (change the features of the structure)
 
     sequence_length = 30
 
-    structuralcount = 2
+    structuralcount = 20
     startcodonstartlocations=[2,9,17,24,27]
 
     dist_uorf_strx = [8] #where the first start codon is
@@ -427,4 +446,5 @@ if __name__ == '__main__':
     permutationlist = random.sample(generate_structure_permutations("n" * sequence_length),structuralcount)
 
     generate(sequence_length, permutationlist)
+    makeCSV()
 
